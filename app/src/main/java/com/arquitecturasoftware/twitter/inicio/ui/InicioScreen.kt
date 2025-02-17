@@ -1,8 +1,6 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,7 +50,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.routes.Routes
 
+//Funcion que contiene el diseño de la pantalla de inicio
 @Composable
 fun InicioScreen(navController: NavController) {
     Scaffold(
@@ -63,7 +63,7 @@ fun InicioScreen(navController: NavController) {
             MyBottomNavigationInicio()
         },
         floatingActionButton = {
-            Fab(onAbrirMenu = { navController.navigate("addtweet") })
+            Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
@@ -73,6 +73,7 @@ fun InicioScreen(navController: NavController) {
     }
 }
 
+//------------------- Screen principal del inicio -------------------//
 @Composable
 fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
     Row(
@@ -142,6 +143,7 @@ fun Fab(onAbrirMenu: ()->Unit) {
     }
 }
 
+//Funcion que contiene el diseño de la pantalla de añadir tweet
 @Composable
 fun AddTweet(navigationController: NavHostController) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -151,55 +153,101 @@ fun AddTweet(navigationController: NavHostController) {
     }
 }
 
+//------------------- Screen de añadir tweet -------------------//
 @Composable
-fun TweetsList(inicioViewModel: InicioViewModel){
-    LazyColumn {
-        //TweetItem()
-    }
-}
-
-@Composable
-fun TweetItem(){
-    Column {
-        Text("Tweet")
-    }
-}
-
-@Composable
-fun TweetDesign(){
-    var chat by remember { mutableStateOf(false) }
-    var rt by remember { mutableStateOf(false) }
-    var like by remember { mutableStateOf(false) }
-    Row(Modifier.fillMaxWidth().padding(40.dp)) {
+fun Tweetear(modifier: Modifier) {
+    var tweet by remember { mutableStateOf("") }
+    Row(modifier.fillMaxWidth().padding(16.dp)) {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = "profile picture",
             modifier = Modifier.clip(shape = CircleShape).size(55.dp)
         )
-        Column (Modifier.fillMaxWidth().padding(16.dp)){
-            Row(Modifier.fillMaxWidth()){
-                TextTitle("Aris", Modifier.padding(end = 8.dp))
-                DefaultTitle("@AristiDevs", Modifier.padding(end = 8.dp))
-                DefaultTitle("4h", Modifier.padding(end = 8.dp))
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(painterResource(id = R.drawable.ic_dots), contentDescription = "dots", tint = Color.White)
-            }
-            TextBody("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.", Modifier.padding(bottom = 16.dp))
-            Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "profile", modifier = Modifier.fillMaxWidth().height(200.dp).clip(
-                RoundedCornerShape(10)
-            ), contentScale = ContentScale.Crop)
-            Row(Modifier.padding(top = 16.dp)){
-                SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {Icon(painterResource(R.drawable.ic_chat), contentDescription = "", tint = Color(0xFF7E8B98))}, selectedIcon = {Icon(
-                    painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Red)}, isSelected = chat) { chat = !chat }
-                SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {Icon(painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color(0xFF7E8B98))}, selectedIcon = {Icon(
-                    painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color.Green)}, isSelected = rt) { rt = !rt }
-                SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {Icon(painterResource(R.drawable.ic_like), contentDescription = "", tint = Color(0xFF7E8B98))}, selectedIcon = {Icon(
-                    painterResource(R.drawable.ic_like_filled), contentDescription = "", tint = Color.Red)}, isSelected = like) { like = !like }
-            }
+        Spacer(modifier = Modifier.size(16.dp))
+        TextField(
+            value = tweet,
+            onValueChange = { tweet = it },
+            maxLines = 12,
+            label = { Text("¿Qué está pensando?") },
+            modifier = Modifier.weight(1f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.LightGray,
+                unfocusedContainerColor = Color.Gray,
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black,
+                unfocusedTextColor = Color.LightGray,
+                focusedTextColor = Color.Black
+            )
+        )
+    }
+}
+
+@Composable
+fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 32.dp, start = 16.dp, end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Close app",
+            modifier = Modifier
+                .clickable { navController.popBackStack() }
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Button(
+            onClick = { },
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            Text("Publicar")
         }
     }
 }
 
+//Funcion que contiene el diseño de un tweet
+@Composable
+fun TweetDesign(){
+    var chat by remember { mutableStateOf(false) }
+    var rt by remember { mutableStateOf(false) }
+    var like by remember { mutableStateOf(false) }
+    Column (modifier = Modifier.padding(top = 16.dp)){
+        HorizontalDivider(color = Color.Gray, thickness = 1.dp)
+        Row(Modifier.fillMaxWidth().padding(10.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "profile picture",
+                modifier = Modifier.clip(shape = CircleShape).size(55.dp)
+            )
+            Column (Modifier.fillMaxWidth().padding(16.dp)){
+                Row(Modifier.fillMaxWidth()){
+                    TextTitle("Aris", Modifier.padding(end = 8.dp))
+                    DefaultTitle("@AristiDevs", Modifier.padding(end = 8.dp))
+                    DefaultTitle("4h", Modifier.padding(end = 8.dp))
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(painterResource(id = R.drawable.ic_dots), contentDescription = "dots", tint = Color.White)
+                }
+                TextBody("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.", Modifier.padding(bottom = 16.dp))
+                Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "profile", modifier = Modifier.fillMaxWidth().height(200.dp).clip(
+                    RoundedCornerShape(10)
+                ), contentScale = ContentScale.Crop)
+                Row(Modifier.padding(top = 16.dp)){
+                    SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {Icon(painterResource(R.drawable.ic_chat), contentDescription = "", tint = Color(0xFF7E8B98))}, selectedIcon = {Icon(
+                        painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Red)}, isSelected = chat) { chat = !chat }
+                    SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {Icon(painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color(0xFF7E8B98))}, selectedIcon = {Icon(
+                        painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color.Green)}, isSelected = rt) { rt = !rt }
+                    SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {Icon(painterResource(R.drawable.ic_like), contentDescription = "", tint = Color(0xFF7E8B98))}, selectedIcon = {Icon(
+                        painterResource(R.drawable.ic_like_filled), contentDescription = "", tint = Color.Red)}, isSelected = like) { like = !like }
+                }
+            }
+        }
+        HorizontalDivider(color = Color.Gray, thickness = 1.dp)
+    }
+}
+
+//------------------- Componentes del diseño del tweet-------------------//
 @Composable
 fun SocialIcon(modifier: Modifier, unselectedIcon: @Composable () -> Unit, selectedIcon: @Composable () -> Unit, isSelected: Boolean, onItemSelected: () -> Unit) {
     val defaultValue = 1
@@ -236,54 +284,8 @@ fun DefaultTitle(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 32.dp, start = 16.dp, end = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = "Close app",
-            modifier = Modifier
-                .clickable { navController.popBackStack() }
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .weight(1f)
-        ) {
-            Text("Publicar")
-        }
-    }
-}
-
-@Composable
-fun Tweetear(modifier: Modifier) {
-    var tweet by remember { mutableStateOf("") }
-    Row(modifier.fillMaxWidth().padding(16.dp)) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "profile picture",
-            modifier = Modifier.clip(shape = CircleShape).size(55.dp)
-        )
-        Spacer(modifier = Modifier.size(16.dp))
-        TextField(
-            value = tweet,
-            onValueChange = { tweet = it },
-            maxLines = 12,
-            label = { Text("¿Qué está pensando?") },
-            modifier = Modifier.weight(1f),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.LightGray,
-                unfocusedContainerColor = Color.Gray,
-                focusedLabelColor = Color.Black,
-                unfocusedLabelColor = Color.Black,
-                unfocusedTextColor = Color.LightGray,
-                focusedTextColor = Color.Black
-            )
-        )
+fun TweetsList(addTweetViewModel: AddTweetViewModel){
+    LazyColumn {
+//        TweetDesign()
     }
 }
