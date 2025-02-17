@@ -1,5 +1,7 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -34,7 +36,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,12 +59,13 @@ import com.arquitecturasoftware.twitter.routes.Routes
 //Funcion que contiene el diseño de la pantalla de inicio
 @Composable
 fun InicioScreen(navController: NavController) {
+    DisableBackPressHandler()
     Scaffold(
         topBar = {
             HeaderInicio(onCliclkIcon = { /*inicioViewModel.onDialogOpened()*/ })
         },
         bottomBar = {
-            MyBottomNavigationInicio()
+            MyBottomNavigationInicio(navController)
         },
         floatingActionButton = {
             Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })
@@ -87,9 +92,9 @@ fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
             contentDescription = "profile picture",
             modifier = Modifier.clip(shape = CircleShape).size(55.dp)
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(0.9f))
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
+            painter = painterResource(id = R.drawable.logo_twitter),
             contentDescription = "profile picture",
             modifier = Modifier.clip(shape = CircleShape).size(55.dp)
         )
@@ -103,12 +108,13 @@ fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MyBottomNavigationInicio() {
-    var indexMio by remember { mutableStateOf(0) }
+fun MyBottomNavigationInicio(navController: NavController) {
+    var indexMio by remember { mutableIntStateOf(0) }
     NavigationBar(containerColor = Color.Black) {
         NavigationBarItem(
             selected = indexMio == 0,
-            onClick = { indexMio = 0 },
+            onClick = { indexMio = 0
+                navController.navigate(Routes.Inicio.ruta) },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
@@ -139,7 +145,7 @@ fun Fab(onAbrirMenu: ()->Unit) {
         contentColor = Color.White
 
     ) {
-        Icon(imageVector = Icons.Filled.Add, contentDescription = "add",)
+        Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
     }
 }
 
@@ -287,5 +293,24 @@ fun DefaultTitle(title: String, modifier: Modifier = Modifier) {
 fun TweetsList(addTweetViewModel: AddTweetViewModel){
     LazyColumn {
 //        TweetDesign()
+    }
+}
+
+@Composable
+fun DisableBackPressHandler() {
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val backCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Do nothing to disable back press
+            }
+        }
+    }
+
+    DisposableEffect(backPressedDispatcher) {
+        backPressedDispatcher?.addCallback(backCallback)
+        onDispose {
+            backCallback.remove()
+        }
     }
 }

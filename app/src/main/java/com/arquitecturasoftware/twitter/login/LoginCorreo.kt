@@ -1,11 +1,11 @@
-import android.annotation.SuppressLint
-import android.app.Activity
+package com.arquitecturasoftware.twitter.login
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -29,8 +29,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,31 +40,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
-import com.arquitecturasoftware.twitter.inicio.ui.InicioScreen
-import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp).imePadding()) {
+    Box(modifier = Modifier.fillMaxSize().imePadding()) {
         val isLoading: Boolean by loginViewModel.isLoading.observeAsState(false)
         val email: String by loginViewModel.email.observeAsState("")
-        val password: String by loginViewModel.password.observeAsState("")
         val isLoginEnable: Boolean by loginViewModel.isLoginEnable.observeAsState(false)
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize().align(Alignment.Center)) {
                 CircularProgressIndicator()
             }
         } else {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Header()
+            Column(modifier = Modifier.fillMaxSize().padding(top = 26.dp)) {
+                Header(navController)
                 TextoEmail()
                 Email(email) { loginViewModel.onLoginChangesEmail(email = it) }
                 Spacer(modifier = Modifier.weight(1f))
                 HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
                 Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
                     Row (Modifier.padding(start = 16.dp, end = 16.dp)){
-                        OlvidarContraseña()
+                        OlvidarContrasena()
                         Spacer(modifier = Modifier.width(16.dp))
                         SiguienteButtonEmail(isLoginEnable, navController)
                     }
@@ -75,29 +72,30 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
 }
 
 @Composable
-fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController){
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp).imePadding()) {
+fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController) {
+    Box(modifier = Modifier.fillMaxSize().imePadding()) {
         val isLoading: Boolean by loginViewModel.isLoading.observeAsState(false)
         val email: String by loginViewModel.email.observeAsState("")
+        val isLoginEnablePassword: Boolean by loginViewModel.isLoginEnablePassword.observeAsState(false)
         val password: String by loginViewModel.password.observeAsState("")
-        val isLoginEnable: Boolean by loginViewModel.isLoginEnable.observeAsState(false)
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize().align(Alignment.Center)) {
                 CircularProgressIndicator()
             }
         } else {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Header()
+            Column(modifier = Modifier.fillMaxSize().padding(top = 26.dp)) {
+                Header(navController)
+                TextoPassword()
                 TextFieldEmail(email)
                 Spacer(modifier = Modifier.height(16.dp))
-                Password(password) { loginViewModel.onLoginChangesPassword(password = it) }
+                Password(password) { loginViewModel.onLoginChangesPassword(it) }
                 Spacer(modifier = Modifier.weight(1f))
                 HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
                 Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
                     Row (Modifier.padding(start = 16.dp, end = 16.dp)){
-                        OlvidarContraseña()
+                        OlvidarContrasena()
                         Spacer(modifier = Modifier.width(10.dp))
-                        IniciarButton(isLoginEnable, navController)
+                        IniciarButton(isLoginEnablePassword, navController)
                     }
                 }
             }
@@ -105,26 +103,23 @@ fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController){
     }
 }
 
-@SuppressLint("ContextCastToActivity")
 @Composable
-fun Header(){
-    val activity = LocalContext.current as Activity
+fun Header(navController: NavController){
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 40.dp, bottom = 30.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.Close,
             contentDescription = "Close app",
             modifier = Modifier
-                .clickable { activity.finish() }
-                .padding(start = 16.dp)
+                .clickable { navController.navigate(Routes.Home.ruta) }
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
-            painterResource(id = R.drawable.ic_launcher_foreground),
+            painterResource(id = R.drawable.logo_twitter),
             contentDescription = "Logo",
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically).clip(shape = CircleShape).size(55.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
     }
@@ -151,7 +146,12 @@ fun TextFieldEmail(email: String) {
 
 @Composable
 fun TextoEmail(){
-    Text("Para empezar, introduce tu correo electrónico", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(16.dp), lineHeight = 40.sp)
+    Text("Para empezar, introduce tu correo electrónico", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(16.dp), lineHeight = 40.sp)
+}
+
+@Composable
+fun TextoPassword(){
+    Text("Introduce tu contraseña", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(16.dp))
 }
 
 @Composable
@@ -163,7 +163,7 @@ fun Password(password: String, onTextChanged: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        placeholder = { Text(text = "Password") },
+        placeholder = { Text(text = "Contraseña") },
         maxLines = 1,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -219,7 +219,7 @@ fun Email(email: String, onTextChanged:(String) -> Unit) {
 }
 
 @Composable
-fun OlvidarContraseña(){
+fun OlvidarContrasena(){
     TextButton(onClick = {}, border = BorderStroke(1.dp, Color.White), colors = ButtonDefaults.textButtonColors(contentColor = Color.White)) {
         Text("¿Olvidaste tu contraseña?", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
     }

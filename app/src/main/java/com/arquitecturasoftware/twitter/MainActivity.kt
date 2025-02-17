@@ -1,7 +1,7 @@
 package com.arquitecturasoftware.twitter
 
-import LoginScreen
-import LoginScreen2
+import com.arquitecturasoftware.twitter.login.LoginScreen
+import com.arquitecturasoftware.twitter.login.LoginScreen2
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +18,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.arquitecturasoftware.twitter.home.HomeScreen
 import com.arquitecturasoftware.twitter.login.LoginViewModel
+import com.arquitecturasoftware.twitter.registro.RegistroScreen
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @AndroidEntryPoint
@@ -36,16 +38,18 @@ class MainActivity : ComponentActivity() {
                     val navigationController = rememberNavController()
                     NavHost(
                         navController = navigationController,
-                        startDestination = Routes.LoginEmail.ruta
+                        startDestination = Routes.Home.ruta
                     ) {
                         composable(Routes.Inicio.ruta) { InicioScreen(navigationController) }
                         composable(Routes.AddTweet.ruta) { AddTweet(navigationController) }
                         composable(Routes.LoginEmail.ruta) { LoginScreen(loginViewModel,navigationController) }
                         composable(Routes.LoginPassword.ruta) { LoginScreen2(loginViewModel,navigationController) }
+                        composable(Routes.Home.ruta) { HomeScreen(navigationController) }
+                        composable(Routes.Registro.ruta) { RegistroScreen(loginViewModel,navigationController) }
                     }
                 }
             }
         }
-        }
     }
+}
 
