@@ -22,6 +22,9 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     private val _password = MutableLiveData<String>()
     val password : LiveData<String> = _password
 
+    private val _codigo = MutableLiveData<String>()
+    val codigo : LiveData<String> = _codigo
+
     private val _isLoginEnable = MutableLiveData<Boolean>()
     val isLoginEnable : LiveData<Boolean> = _isLoginEnable
 
@@ -30,6 +33,9 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     private val _isLoginEnablePassword = MutableLiveData<Boolean>()
     val isLoginEnablePassword : LiveData<Boolean> = _isLoginEnablePassword
+
+    private val _isCodigoEnable = MutableLiveData<Boolean>()
+    val isCodigoEnable : LiveData<Boolean> = _isCodigoEnable
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> = _isLoading
@@ -51,6 +57,15 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
         _isRegisterEnable.value = enableRegisto(nombre, email, fechaNacimiento)
     }
 
+    fun onCodigoChanges(codigo: String){
+        _codigo.value = codigo
+        _isCodigoEnable.value = enableRegisto(codigo)
+    }
+
+    private fun enableRegisto(codigo: String): Boolean {
+        return true
+    }
+
     private fun enableRegisto(nombre: String, email: String, fechaNacimiento: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches() && nombre.length <= 50 && fechaNacimiento.isNotEmpty()
     }
@@ -60,7 +75,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     }
 
     private fun enableLoginPassword(password: String): Boolean {
-        return password.length >= 6
+        return password.length >= 8
     }
 
 }

@@ -105,6 +105,8 @@ fun CrearCuentaButton(navigationController: NavHostController) {
 fun TextHome(){
     Text(text = "Entérate de lo que está pasando en el mundo en este momento.", fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp),lineHeight = 40.sp)
 }
+
+
 @Composable
 fun PoliticsText() {
     val uriHandler = LocalUriHandler.current

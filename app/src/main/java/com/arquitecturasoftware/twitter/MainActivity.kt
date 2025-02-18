@@ -20,6 +20,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arquitecturasoftware.twitter.home.HomeScreen
 import com.arquitecturasoftware.twitter.login.LoginViewModel
+import com.arquitecturasoftware.twitter.registro.CodigoVerificacion
+import com.arquitecturasoftware.twitter.registro.ContraRegistro
 import com.arquitecturasoftware.twitter.registro.RegistroScreen
 import com.arquitecturasoftware.twitter.routes.Routes
 
@@ -46,6 +48,10 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.LoginPassword.ruta) { LoginScreen2(loginViewModel,navigationController) }
                         composable(Routes.Home.ruta) { HomeScreen(navigationController) }
                         composable(Routes.Registro.ruta) { RegistroScreen(loginViewModel,navigationController) }
+                        composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(loginViewModel,navigationController) }
+                        composable(Routes.RegisterPassword.ruta) { ContraRegistro(loginViewModel,navigationController) }
+
+
                     }
                 }
             }

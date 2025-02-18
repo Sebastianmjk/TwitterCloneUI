@@ -7,4 +7,6 @@ sealed class Routes(val ruta : String) {
     data object LoginPassword : Routes("loginpassword")
     data object Home : Routes("home")
     data object Registro : Routes("registro")
+    data object CodigoVerificacion: Routes("codigo")
+    data object RegisterPassword : Routes("registerpassword")
 }
