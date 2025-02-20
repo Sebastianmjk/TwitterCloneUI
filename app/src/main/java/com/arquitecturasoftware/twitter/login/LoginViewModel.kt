@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) :ViewModel() {
+class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCase*/) :ViewModel() {
 
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
@@ -21,6 +21,9 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     private val _password = MutableLiveData<String>()
     val password : LiveData<String> = _password
+
+    private val _newPassword = MutableLiveData<String>()
+    val newPassword : LiveData<String> = _newPassword
 
     private val _codigo = MutableLiveData<String>()
     val codigo : LiveData<String> = _codigo
@@ -39,6 +42,15 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> = _isLoading
+
+    private val _isLoginEnableNewPassword = MutableLiveData<Boolean>()
+    val isLoginNewEnablePassword : LiveData<Boolean> = _isLoginEnableNewPassword
+
+    fun onLoginChangesNewPassword(password:String, newPassword:String){
+        _password.value = password
+        _newPassword.value = newPassword
+        _isLoginEnableNewPassword.value = enableLoginNewPassword(password, newPassword)
+    }
 
     fun onLoginChangesEmail(email:String){
         _email.value = email
@@ -76,6 +88,10 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     private fun enableLoginPassword(password: String): Boolean {
         return password.length >= 8
+    }
+
+    private fun enableLoginNewPassword(password: String, newPassword:String): Boolean {
+        return  password == newPassword
     }
 
 }

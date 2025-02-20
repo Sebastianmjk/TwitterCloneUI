@@ -15,9 +15,13 @@ import androidx.navigation.compose.composable
 import com.arquitecturasoftware.twitter.home.HomeScreen
 import com.arquitecturasoftware.twitter.inicio.ui.AddTweet
 import com.arquitecturasoftware.twitter.inicio.ui.InicioScreen
-import com.arquitecturasoftware.twitter.login.LoginScreen
-import com.arquitecturasoftware.twitter.login.LoginScreen2
+import com.arquitecturasoftware.twitter.inicio.ui.ProfileScreen
+import com.arquitecturasoftware.twitter.login.ui.LoginScreen
+import com.arquitecturasoftware.twitter.login.ui.LoginScreen2
 import com.arquitecturasoftware.twitter.login.LoginViewModel
+import com.arquitecturasoftware.twitter.login.ui.LoginCodigoVerificacion
+import com.arquitecturasoftware.twitter.login.ui.LoginNewContrasena
+import com.arquitecturasoftware.twitter.login.ui.LoginOlvidarContrasena
 import com.arquitecturasoftware.twitter.registro.CodigoVerificacion
 import com.arquitecturasoftware.twitter.registro.ContraRegistro
 import com.arquitecturasoftware.twitter.registro.RegistroScreen
@@ -51,6 +55,10 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.Registro.ruta) { RegistroScreen(loginViewModel, navigationController) }
                         composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(loginViewModel, navigationController) }
                         composable(Routes.RegisterPassword.ruta) { ContraRegistro(loginViewModel, navigationController) }
+                        composable(Routes.Perfil.ruta) { ProfileScreen(navigationController) }
+                        composable(Routes.OlvidarContrasena.ruta) { LoginOlvidarContrasena(loginViewModel, navigationController) }
+                        composable(Routes.OlvidarContraCodigo.ruta) { LoginCodigoVerificacion(loginViewModel, navigationController) }
+                        composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
                     }
                 }
             }

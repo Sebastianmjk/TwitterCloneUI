@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.arquitecturasoftware.twitter.registro
 
 import androidx.compose.foundation.Image
@@ -44,7 +46,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.login.LoginViewModel
-import com.arquitecturasoftware.twitter.login.Password
+import com.arquitecturasoftware.twitter.login.ui.Password
 import com.arquitecturasoftware.twitter.routes.Routes
 import androidx.compose.material3.Text as Text
 
@@ -112,10 +114,17 @@ fun CodigoVerificacion(loginViewModel: LoginViewModel, navigationController: Nav
 }
 
 @Composable
-fun ContraRegistro(loginViewModel: LoginViewModel, navigationController: NavController){
+fun ContraRegistro(loginViewModel: LoginViewModel, navigationController: NavController) {
     val password: String by loginViewModel.password.observeAsState("")
-    val isEnable : Boolean by loginViewModel.isLoginEnablePassword.observeAsState(false)
-    Column (Modifier.fillMaxSize().padding(top = 26.dp, start = 16.dp, end = 16.dp).imePadding().zIndex(1f)){
+    val isEnable: Boolean by loginViewModel.isLoginEnablePassword.observeAsState(false)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 26.dp, start = 16.dp, end = 16.dp)
+            .imePadding()
+            .zIndex(1f)
+    ) {
         com.arquitecturasoftware.twitter.home.Header()
         Spacer(modifier = Modifier.size(10.dp))
         ContrasenaTextTittle()
@@ -124,8 +133,13 @@ fun ContraRegistro(loginViewModel: LoginViewModel, navigationController: NavCont
         PoliticsTextContra()
         Spacer(modifier = Modifier.weight(1f))
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp).imePadding()) {
-            Row (Modifier.padding(start = 16.dp, end = 16.dp)){
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 48.dp)
+                .imePadding()
+        ) {
+            Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                 Spacer(modifier = Modifier.weight(1f))
                 SiguienteButtonContrasena(isEnable, navigationController)
             }
@@ -143,7 +157,8 @@ fun Header(navController: NavController){
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Comeback",
             modifier = Modifier
-                .clickable { navController.navigate(Routes.Home.ruta) }
+                .clickable { navController.navigate(Routes.Home.ruta) },
+            tint = Color.White
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -165,7 +180,8 @@ fun Header2(navController: NavController){
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Comeback",
             modifier = Modifier
-                .clickable { navController.navigate(Routes.Registro.ruta) }
+                .clickable { navController.navigate(Routes.Registro.ruta) },
+            tint = Color.White
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(

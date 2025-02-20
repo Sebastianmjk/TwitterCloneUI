@@ -2,6 +2,7 @@ package com.arquitecturasoftware.twitter.inicio.ui
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -33,6 +35,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -41,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +64,7 @@ import com.arquitecturasoftware.twitter.routes.Routes
 @Composable
 fun InicioScreen(navController: NavController) {
     DisableBackPressHandler()
-    Scaffold(
+    Scaffold( containerColor = Color.Black,
         topBar = {
             HeaderInicio(onCliclkIcon = { /*inicioViewModel.onDialogOpened()*/ })
         },
@@ -73,8 +77,91 @@ fun InicioScreen(navController: NavController) {
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            TweetDesign()
+            LazyColumn {
+                items(3) {
+                    TweetDesign()
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun ProfileScreen(navController: NavController) {
+    Scaffold( containerColor = Color.Black,
+        topBar = {
+            HeaderProfile()
+        },
+        bottomBar = {
+            MyBottomNavigationInicio(navController)
+        },
+        floatingActionButton = {
+            Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })
+        },
+        floatingActionButtonPosition = FabPosition.End
+    ) { paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
+            Row{
+                var selectedButton by remember { mutableStateOf(SelectedButton.NONE) }
+                TextButton(
+                    onClick = { selectedButton = SelectedButton.PUBLICACIONES },
+                    colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
+                    border = if (selectedButton == SelectedButton.PUBLICACIONES) BorderStroke(1.dp, Color(0xFFADD8E6)) else BorderStroke(1.dp, Color.Transparent)
+                ) {
+                    Text(text = "Publicaciones")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = { selectedButton = SelectedButton.RETWEETS },
+                    colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
+                    border = if (selectedButton == SelectedButton.RETWEETS) BorderStroke(1.dp, Color(0xFFADD8E6)) else BorderStroke(1.dp, Color.Transparent)
+                ) {
+                    Text(text = "Retweets")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = { selectedButton = SelectedButton.ME_GUSTA },
+                    colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
+                    border = if (selectedButton == SelectedButton.ME_GUSTA) BorderStroke(1.dp, Color(0xFFADD8E6)) else BorderStroke(1.dp, Color.Transparent)
+                ) {
+                    Text(text = "Me gusta")
+                }
+            }
+            HorizontalDivider(color = Color.Gray, thickness = 1.dp)
+            LazyColumn {
+                items(3) {
+                    TweetDesign()
+                }
+            }
+        }
+    }
+}
+
+enum class SelectedButton {
+    PUBLICACIONES, RETWEETS, ME_GUSTA, NONE
+}
+
+@Composable
+fun HeaderProfile(){
+    Column (Modifier.fillMaxWidth()){
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = "fondo perfil",
+            modifier = Modifier.fillMaxWidth().padding(top = 32.dp).clip(shape = RoundedCornerShape(10)),
+        )
+        Row (Modifier.fillMaxWidth().padding(top = 16.dp, start = 16.dp, end = 16.dp)){
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "profile picture",
+                modifier = Modifier.clip(shape = CircleShape).size(55.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Button(onClick = { }, border = BorderStroke(1.dp, Color.Gray), colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black)) {
+                Text("Configurar Perfil")
+            }
+        }
+        Text("AristiDevs", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, start = 16.dp))
+        Text("@AristiDevs", color = Color.Gray, fontSize = 16.sp, modifier = Modifier.padding(start = 16.dp))
     }
 }
 
@@ -84,7 +171,7 @@ fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 32.dp, start = 16.dp, end = 16.dp),
+            .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -109,30 +196,52 @@ fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
 
 @Composable
 fun MyBottomNavigationInicio(navController: NavController) {
-    var indexMio by remember { mutableIntStateOf(0) }
+    var indexMio by rememberSaveable { mutableIntStateOf(0) }
     NavigationBar(containerColor = Color.Black) {
         NavigationBarItem(
             selected = indexMio == 0,
-            onClick = { indexMio = 0
-                navController.navigate(Routes.Inicio.ruta) },
+            onClick = {
+                indexMio = 0
+                navController.navigate(Routes.Inicio.ruta) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
                     contentDescription = "home"
                 )
-            }, label = {
-                Text(text = "Inicio", color = Color.White) },
+            },
+            label = {
+                Text(text = "Inicio", color = Color.White)
+            },
             colors = NavigationBarItemDefaults.colors(Color.White)
         )
         NavigationBarItem(
             selected = indexMio == 1,
-            onClick = { indexMio = 1 },
+            onClick = {
+                indexMio = 1
+                navController.navigate(Routes.Perfil.ruta) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = "person"
                 )
-            }, label = { Text(text = "Perfil", color = Color.White) },
+            },
+            label = {
+                Text(text = "Perfil", color = Color.White)
+            },
             colors = NavigationBarItemDefaults.colors(Color.White)
         )
     }
@@ -200,7 +309,8 @@ fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController) 
             imageVector = Icons.Default.Close,
             contentDescription = "Close app",
             modifier = Modifier
-                .clickable { navController.popBackStack() }
+                .clickable { navController.popBackStack() },
+            tint = Color.White
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
@@ -216,10 +326,10 @@ fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController) 
 //Funcion que contiene el diseño de un tweet
 @Composable
 fun TweetDesign(){
-    var chat by remember { mutableStateOf(false) }
-    var rt by remember { mutableStateOf(false) }
-    var like by remember { mutableStateOf(false) }
-    Column (modifier = Modifier.padding(top = 16.dp)){
+    var chat by rememberSaveable { mutableStateOf(false) }
+    var rt by rememberSaveable { mutableStateOf(false) }
+    var like by rememberSaveable { mutableStateOf(false) }
+    Column {
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
         Row(Modifier.fillMaxWidth().padding(10.dp)) {
             Image(
