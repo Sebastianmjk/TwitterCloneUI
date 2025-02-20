@@ -1,8 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.arquitecturasoftware.twitter.home
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,14 +12,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,11 +48,9 @@ fun HomeScreen(navigationController: NavHostController) {
         Spacer(modifier = Modifier.size(100.dp))
         TextHome()
         Spacer(modifier = Modifier.size(150.dp))
-        SocialHome()
-        HomeDivider()
         CrearCuentaButton(navigationController)
         PoliticsText()
-        Spacer(modifier = Modifier.size(16.dp))
+        Spacer(modifier = Modifier.weight(1f))
         IniciarSesionText(navigationController)
     }
 }
@@ -68,27 +65,6 @@ fun Header(){
             modifier = Modifier.clip(shape = CircleShape).size(55.dp)
 
         )
-    }
-}
-
-@Composable
-fun HomeDivider() {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        HorizontalDivider(Modifier.background(Color(0xFFF9F9F9)).height(1.dp).weight(1f))
-        Text(text = "O", modifier = Modifier.padding(horizontal = 18.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFFB5B5B5))
-        HorizontalDivider(Modifier.background(Color(0xFFF9F9F9)).height(1.dp).weight(1f))
-    }
-}
-
-@Composable
-fun SocialHome(){
-    Box(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)) {
-        Button(onClick = { }, colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
-                Image(painter = painterResource(id = R.drawable.logo_google), contentDescription = "Social login google", modifier = Modifier.size(16.dp).clip(CircleShape))
-                Text(text = "Continuar con Google", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.padding(horizontal = 8.dp))
-            }
-        }
     }
 }
 
@@ -149,7 +125,7 @@ fun PoliticsText() {
 
 @Composable
 fun IniciarSesionText(navigationController: NavHostController) {
-    Row (Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp), horizontalArrangement = Arrangement.Center){
+    Row (Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 64.dp), horizontalArrangement = Arrangement.Center){
         Text(text = "¿Ya tienes una cuenta?", fontSize = 16.sp, color = Color.Gray)
         Spacer(modifier = Modifier.size(8.dp))
         Text(

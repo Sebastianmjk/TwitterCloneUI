@@ -39,15 +39,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.arquitecturasoftware.twitter.R
-import com.arquitecturasoftware.twitter.home.CrearCuentaButton
-import com.arquitecturasoftware.twitter.home.HomeDivider
-import com.arquitecturasoftware.twitter.home.IniciarSesionText
-import com.arquitecturasoftware.twitter.home.PoliticsText
-import com.arquitecturasoftware.twitter.home.SocialHome
-import com.arquitecturasoftware.twitter.home.TextHome
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.login.Password
 import com.arquitecturasoftware.twitter.routes.Routes
@@ -81,23 +76,36 @@ fun RegistroScreen(loginViewModel: LoginViewModel, navigationController: NavHost
 }
 
 @Composable
-fun CodigoVerificacion(loginViewModel: LoginViewModel, navigationController : NavController){
-    val email : String by loginViewModel.email.observeAsState("")
-    val codigo : String by loginViewModel.codigo.observeAsState("")
-    val isEnable : Boolean by loginViewModel.isCodigoEnable.observeAsState(false)
-    Column (Modifier.fillMaxSize().padding(top = 26.dp, start = 16.dp, end = 16.dp).imePadding()){
-        Header2(navigationController)
-        Spacer(modifier = Modifier.size(2.dp))
-        CodigoTextTittle()
-        CodigoText(email)
-        CodigoVerificacion(codigo) {loginViewModel.onCodigoChanges(it)}
-        NoRecibioText(navigationController)
-        Spacer(modifier = Modifier.weight(1f))
-        HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
-            Row (Modifier.padding(start = 16.dp, end = 16.dp)){
-                Spacer(modifier = Modifier.weight(1f))
-                SiguienteButtonCodigo(isEnable, navigationController)
+fun CodigoVerificacion(loginViewModel: LoginViewModel, navigationController: NavController) {
+    val email: String by loginViewModel.email.observeAsState("")
+    val codigo: String by loginViewModel.codigo.observeAsState("")
+    val isEnable: Boolean by loginViewModel.isCodigoEnable.observeAsState(false)
+
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .imePadding()
+        .zIndex(1f)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 26.dp, start = 16.dp, end = 16.dp)
+        ) {
+            Header2(navigationController)
+            Spacer(modifier = Modifier.size(2.dp))
+            CodigoTextTittle()
+            CodigoText(email)
+            CodigoVerificacion(codigo) { loginViewModel.onCodigoChanges(it) }
+            NoRecibioText(navigationController)
+            Spacer(modifier = Modifier.weight(1f))
+            HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
+            Box(modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 48.dp)
+                .imePadding()) {
+                Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    SiguienteButtonCodigo(isEnable, navigationController)
+                }
             }
         }
     }
@@ -107,7 +115,7 @@ fun CodigoVerificacion(loginViewModel: LoginViewModel, navigationController : Na
 fun ContraRegistro(loginViewModel: LoginViewModel, navigationController: NavController){
     val password: String by loginViewModel.password.observeAsState("")
     val isEnable : Boolean by loginViewModel.isLoginEnablePassword.observeAsState(false)
-    Column (Modifier.fillMaxSize().padding(top = 26.dp, start = 16.dp, end = 16.dp).imePadding()){
+    Column (Modifier.fillMaxSize().padding(top = 26.dp, start = 16.dp, end = 16.dp).imePadding().zIndex(1f)){
         com.arquitecturasoftware.twitter.home.Header()
         Spacer(modifier = Modifier.size(10.dp))
         ContrasenaTextTittle()
@@ -116,7 +124,7 @@ fun ContraRegistro(loginViewModel: LoginViewModel, navigationController: NavCont
         PoliticsTextContra()
         Spacer(modifier = Modifier.weight(1f))
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
+        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp).imePadding()) {
             Row (Modifier.padding(start = 16.dp, end = 16.dp)){
                 Spacer(modifier = Modifier.weight(1f))
                 SiguienteButtonContrasena(isEnable, navigationController)
