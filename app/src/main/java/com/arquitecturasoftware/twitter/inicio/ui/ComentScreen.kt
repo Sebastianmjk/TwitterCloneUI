@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
@@ -26,17 +28,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import com.arquitecturasoftware.twitter.inicio.ui.model.Comentario
 import kotlinx.coroutines.launch
-
-data class Comment(val text: String, val author: String, var liked: Boolean = false)
 
 @Composable
 fun ComentScreen(navController: NavController) {
     val commentText = remember { mutableStateOf("") }
-    val comments = remember { mutableStateListOf<Comment>() }
+    val comments = remember { mutableStateListOf<Comentario>() }
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -47,7 +51,12 @@ fun ComentScreen(navController: NavController) {
         Button(
             onClick = {
                 scope.launch {
-                    comments.add(Comment(commentText.value, "User"))
+                    comments.add(Comentario(
+                        text = commentText.value,
+                        author = "User",
+                        profilePictureUrl = "https://example.com/profile.jpg",
+                        timestamp = "2h ago"
+                    ))
                     commentText.value = ""
                 }
             },
@@ -66,12 +75,23 @@ fun ComentScreen(navController: NavController) {
 }
 
 @Composable
-fun CommentItem(comment: Comment) {
+fun CommentItem(comment: Comentario) {
     val liked = remember { mutableStateOf(comment.liked) }
 
     Column(modifier = Modifier.padding(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = comment.author, color = Color.White, modifier = Modifier.weight(1f))
+            Image(
+                painter = rememberImagePainter(data = comment.profilePictureUrl),
+                contentDescription = "profile picture",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(40.dp)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = comment.author, color = Color.White)
+                Text(text = comment.timestamp, color = Color.Gray, fontSize = 12.sp)
+            }
             Icon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "Like",
