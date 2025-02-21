@@ -45,6 +45,7 @@ import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
 fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, sharedViewModel: SharedViewModel) {
+    DisableBackPressHandler()
     Scaffold(
         containerColor = Color.Black,
         topBar = {
