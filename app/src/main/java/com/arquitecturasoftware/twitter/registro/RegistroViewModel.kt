@@ -63,11 +63,12 @@ class RegistroViewModel @Inject constructor() : ViewModel() {
         _isRegistroEnablePassword.value = enableRegistroPassword(password)
     }
 
-    fun onRegistroChanges(nombre:String, email:String, fechaNacimiento:String){
+    fun onRegistroChanges(nombre:String, email:String){
         _nombre.value = nombre
         _email.value = email
-        _fechaNacimiento.value = fechaNacimiento
-        _isRegisterEnable.value = enableRegisto(nombre, email, fechaNacimiento)
+        _isRegisterEnable.value = enableRegisto(
+            nombre, email,
+        )
     }
 
     private fun enableRegistroEmail(email: String): Boolean {
@@ -78,8 +79,8 @@ class RegistroViewModel @Inject constructor() : ViewModel() {
         return password.length >= 8
     }
 
-    private fun enableRegisto(nombre: String, email: String, fechaNacimiento: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches() && nombre.length <= 50 && fechaNacimiento.isNotEmpty()
+    private fun enableRegisto(nombre: String, email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches() && nombre.length <= 50
     }
 
     private fun enableCodigo(codigo: String): Boolean {

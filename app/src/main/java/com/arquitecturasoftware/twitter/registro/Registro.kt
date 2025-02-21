@@ -42,18 +42,16 @@ import androidx.compose.material3.Text as Text
 fun RegistroScreen(registroViewModel: RegistroViewModel, navigationController: NavHostController) {
     val nombre : String by registroViewModel.nombre.observeAsState("")
     val email : String by registroViewModel.email.observeAsState("")
-    val fechaNacimiento : String by registroViewModel.fechaNacimiento.observeAsState("")
     val isEnable : Boolean by registroViewModel.isRegisterEnable.observeAsState(false)
     Column (Modifier.fillMaxSize().padding(top = 26.dp, start = 16.dp, end = 16.dp).imePadding()){
         Header(navigationController)
         Spacer(modifier = Modifier.size(2.dp))
         RegistroText()
         Spacer(modifier = Modifier.size(16.dp))
-        Nombre(nombre) { registroViewModel.onRegistroChanges(it, email, fechaNacimiento) }
+        Nombre(nombre) { registroViewModel.onRegistroChanges(it, email) }
         Spacer(modifier = Modifier.size(16.dp))
-        Email(email) { registroViewModel.onRegistroChanges(nombre, it, fechaNacimiento) }
+        Email(email) { registroViewModel.onRegistroChanges(nombre, it) }
         Spacer(modifier = Modifier.size(16.dp))
-        FechaNacimiento(fechaNacimiento) { registroViewModel.onRegistroChanges(nombre, email, it) }
         Spacer(modifier = Modifier.weight(1f))
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
         Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {

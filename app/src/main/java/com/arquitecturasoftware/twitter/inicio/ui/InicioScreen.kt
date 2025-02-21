@@ -23,16 +23,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,17 +40,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun InicioScreen(navController: NavController) {
+fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel) {
     DisableBackPressHandler()
-    Scaffold( containerColor = Color.Black,
+    Scaffold(
+        containerColor = Color.Black,
         topBar = {
             HeaderInicio(navController)
         },
         bottomBar = {
-            MyBottomNavigationInicio(navController)
+            MyBottomNavigationInicio(navController, sharedViewModel)
         },
         floatingActionButton = {
             Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })
@@ -88,7 +89,7 @@ fun HeaderInicio(navController: NavController) {
             modifier = Modifier.clip(shape = CircleShape).size(55.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = {navController.navigate(Routes.Home.ruta) }, colors = IconButtonDefaults.iconButtonColors(
+        IconButton(onClick = { navController.navigate(Routes.Home.ruta) }, colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         )) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar sesion")
@@ -97,73 +98,54 @@ fun HeaderInicio(navController: NavController) {
 }
 
 @Composable
-fun MyBottomNavigationInicio(navController: NavController) {
-    var indexMio by rememberSaveable { mutableIntStateOf(0) }
-    NavigationBar(containerColor = Color.Black) {
-        NavigationBarItem(
-            selected = indexMio == 0,
-            onClick = {
-                indexMio = 0
-                navController.navigate(Routes.Inicio.ruta) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
+fun MyBottomNavigationInicio(navController: NavController, sharedViewModel: SharedViewModel) {
+    val items = listOf("Inicio", "Perfil")
+    val currentIndex by sharedViewModel.selectedIndex.observeAsState(0)
+
+    NavigationBar(
+        containerColor = Color.Black,
+        contentColor = Color.White
+    ) {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        imageVector = if (index == 0) Icons.Default.Home else Icons.Default.Person,
+                        contentDescription = item
+                    )
+                },
+                label = { Text(text = item) },
+                selected = currentIndex == index,
+                onClick = {
+                    sharedViewModel.setSelectedIndex(index)
+                    navController.navigate(item) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                    launchSingleTop = true
-                    restoreState = true
                 }
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "home"
-                )
-            },
-            label = {
-                Text(text = "Inicio", color = Color.White)
-            },
-            colors = NavigationBarItemDefaults.colors(Color.White)
-        )
-        NavigationBarItem(
-            selected = indexMio == 1,
-            onClick = {
-                indexMio = 1
-                navController.navigate(Routes.Perfil.ruta) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "person"
-                )
-            },
-            label = {
-                Text(text = "Perfil", color = Color.White)
-            },
-            colors = NavigationBarItemDefaults.colors(Color.White)
-        )
+            )
+        }
     }
 }
 
 @Composable
-fun Fab(onAbrirMenu: ()->Unit) {
-    FloatingActionButton(onClick = { onAbrirMenu() },
+fun Fab(onAbrirMenu: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onAbrirMenu() },
         containerColor = Color.Blue,
         contentColor = Color.White
-
     ) {
         Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
     }
 }
 
 @Composable
-fun TweetsList(addTweetViewModel: AddTweetViewModel){
+fun TweetsList(addTweetViewModel: AddTweetViewModel) {
     LazyColumn {
-//        TweetDesign()
+        // TweetDesign()
     }
 }
 

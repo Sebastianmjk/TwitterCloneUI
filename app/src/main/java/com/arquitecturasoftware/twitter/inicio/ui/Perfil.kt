@@ -40,24 +40,26 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.login.LoginViewModel
+import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel) {
-    Scaffold( containerColor = Color.Black,
+fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, sharedViewModel: SharedViewModel) {
+    Scaffold(
+        containerColor = Color.Black,
         topBar = {
             HeaderProfile(navController, loginViewModel)
         },
         bottomBar = {
-            MyBottomNavigationInicio(navController)
+            MyBottomNavigationInicio(navController, sharedViewModel)
         },
         floatingActionButton = {
             Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            Row{
+        Column(modifier = Modifier.padding(paddingValues).padding(bottom = 8.dp)) {
+            Row {
                 var selectedButton by remember { mutableStateOf(SelectedButton.PUBLICACIONES) }
                 TextButton(
                     onClick = { selectedButton = SelectedButton.PUBLICACIONES },
@@ -107,7 +109,7 @@ fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) 
     }
 
     Column(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth().padding(top = 26.dp, start = 16.dp, end = 16.dp)) {
+        Row(Modifier.fillMaxWidth().padding(top = 36.dp, start = 16.dp, end = 16.dp)) {
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
@@ -140,7 +142,7 @@ fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) 
             "@AristiDevs",
             color = Color.Gray,
             fontSize = 16.sp,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
         )
     }
 }
