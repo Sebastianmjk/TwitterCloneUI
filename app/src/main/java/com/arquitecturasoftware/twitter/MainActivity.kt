@@ -24,7 +24,9 @@ import com.arquitecturasoftware.twitter.login.ui.LoginNewContrasena
 import com.arquitecturasoftware.twitter.login.ui.LoginOlvidarContrasena
 import com.arquitecturasoftware.twitter.registro.CodigoVerificacion
 import com.arquitecturasoftware.twitter.registro.ContraRegistro
+import com.arquitecturasoftware.twitter.registro.RegistroArrobaNombre
 import com.arquitecturasoftware.twitter.registro.RegistroScreen
+import com.arquitecturasoftware.twitter.registro.RegistroViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 import com.arquitecturasoftware.twitter.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
+    private val registroViewModel: RegistroViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +55,14 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.LoginEmail.ruta) { LoginScreen(loginViewModel, navigationController) }
                         composable(Routes.LoginPassword.ruta) { LoginScreen2(loginViewModel, navigationController) }
                         composable(Routes.Home.ruta) { HomeScreen(navigationController) }
-                        composable(Routes.Registro.ruta) { RegistroScreen(loginViewModel, navigationController) }
-                        composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(loginViewModel, navigationController) }
-                        composable(Routes.RegisterPassword.ruta) { ContraRegistro(loginViewModel, navigationController) }
+                        composable(Routes.Registro.ruta) { RegistroScreen(registroViewModel, navigationController) }
+                        composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(registroViewModel, navigationController) }
+                        composable(Routes.RegisterPassword.ruta) { ContraRegistro(registroViewModel, navigationController) }
                         composable(Routes.Perfil.ruta) { ProfileScreen(navigationController) }
                         composable(Routes.OlvidarContrasena.ruta) { LoginOlvidarContrasena(loginViewModel, navigationController) }
                         composable(Routes.OlvidarContraCodigo.ruta) { LoginCodigoVerificacion(loginViewModel, navigationController) }
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
+                        composable(Routes.RegistroArrobaNombre.ruta) { RegistroArrobaNombre(registroViewModel, navigationController) }
                     }
                 }
             }

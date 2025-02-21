@@ -13,9 +13,6 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
 
-    private val _fechaNacimiento = MutableLiveData<String>()
-    val fechaNacimiento : LiveData<String> = _fechaNacimiento
-
     private val _email = MutableLiveData<String>()
     val email : LiveData<String> = _email
 
@@ -25,14 +22,11 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
     private val _newPassword = MutableLiveData<String>()
     val newPassword : LiveData<String> = _newPassword
 
-    private val _codigo = MutableLiveData<String>()
-    val codigo : LiveData<String> = _codigo
-
     private val _isLoginEnable = MutableLiveData<Boolean>()
     val isLoginEnable : LiveData<Boolean> = _isLoginEnable
 
-    private val _isRegisterEnable = MutableLiveData<Boolean>()
-    val isRegisterEnable : LiveData<Boolean> = _isRegisterEnable
+    private val _codigo = MutableLiveData<String>()
+    val codigo : LiveData<String> = _codigo
 
     private val _isLoginEnablePassword = MutableLiveData<Boolean>()
     val isLoginEnablePassword : LiveData<Boolean> = _isLoginEnablePassword
@@ -52,6 +46,11 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
         _isLoginEnableNewPassword.value = enableLoginNewPassword(password, newPassword)
     }
 
+    fun onCodigoChanges(codigo:String){
+        _codigo.value = codigo
+        _isCodigoEnable.value = enableCodigo(codigo)
+    }
+
     fun onLoginChangesEmail(email:String){
         _email.value = email
         _isLoginEnable.value = enableLoginEmail(email)
@@ -60,26 +59,6 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
     fun onLoginChangesPassword(password:String){
         _password.value = password
         _isLoginEnablePassword.value = enableLoginPassword(password)
-    }
-
-    fun onRegistroChanges(nombre:String, email:String, fechaNacimiento:String){
-        _nombre.value = nombre
-        _email.value = email
-        _fechaNacimiento.value = fechaNacimiento
-        _isRegisterEnable.value = enableRegisto(nombre, email, fechaNacimiento)
-    }
-
-    fun onCodigoChanges(codigo: String){
-        _codigo.value = codigo
-        _isCodigoEnable.value = enableRegisto(codigo)
-    }
-
-    private fun enableRegisto(codigo: String): Boolean {
-        return true
-    }
-
-    private fun enableRegisto(nombre: String, email: String, fechaNacimiento: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches() && nombre.length <= 50 && fechaNacimiento.isNotEmpty()
     }
 
     private fun enableLoginEmail(email: String): Boolean {
@@ -92,6 +71,10 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
 
     private fun enableLoginNewPassword(password: String, newPassword:String): Boolean {
         return  password == newPassword
+    }
+
+    private fun enableCodigo(codigo: String): Boolean {
+        return true
     }
 
 }
