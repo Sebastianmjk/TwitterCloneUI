@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -132,18 +134,42 @@ fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) 
                 Text("Editar Perfil")
             }
         }
-        Text(
-            "AristiDevs",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 16.dp, start = 16.dp)
-        )
-        Text(
-            "@AristiDevs",
-            color = Color.Gray,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column (Modifier.padding(end = 24.dp)) {
+                Text(
+                    "AristiDevs",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                Text(
+                    "@AristiDevs",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+            CerrarSesionButton(navController)
+        }
+    }
+}
+
+@Composable
+fun CerrarSesionButton(navController: NavController) {
+    Button(
+        onClick = { navController.navigate(Routes.Home.ruta) },
+        enabled = true,
+        border = BorderStroke(1.dp, Color.Red),
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.Red)
+    ) {
+        Text(text = "Cerrar sesion")
     }
 }

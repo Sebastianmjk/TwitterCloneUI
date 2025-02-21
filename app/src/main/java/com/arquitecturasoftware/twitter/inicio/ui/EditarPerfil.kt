@@ -3,7 +3,6 @@ package com.arquitecturasoftware.twitter.inicio.ui
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,24 +25,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
@@ -55,18 +50,15 @@ fun EditarPerfil(loginViewModel: LoginViewModel, navController: NavController) {
         BodyEditarPerfil(loginViewModel)
         Spacer(Modifier.weight(1f))
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
-            Row (Modifier.padding(start = 16.dp, end = 16.dp)){
-                Spacer(modifier = Modifier.weight(1f))
-                CerrarSesionButton(navController)
+        Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(start = 16.dp, end = 16.dp, bottom = 48.dp)) {
+                GuardarButton()
             }
         }
     }
-}
 
 @Composable
 fun HeaderEditarPerfil(navController: NavController) {
-    Box(Modifier.fillMaxWidth().padding(top = 26.dp, start = 16.dp, end = 16.dp)){
+    Box(Modifier.fillMaxWidth().padding(top = 26.dp)){
         Row(verticalAlignment = Alignment.CenterVertically){
             IconButton(onClick = {navController.navigate(Routes.Perfil.ruta) }, colors = IconButtonDefaults.iconButtonColors(
                 contentColor = Color.White
@@ -76,7 +68,6 @@ fun HeaderEditarPerfil(navController: NavController) {
             Spacer(Modifier.weight(1f))
             EditarPerfilTittle()
             Spacer(Modifier.weight(1f))
-            GuardarButton()
         }
     }
 }
@@ -88,8 +79,8 @@ fun EditarPerfilTittle(){
 
 @Composable
 fun GuardarButton(){
-    TextButton(onClick = {}) {
-        Text(text = "Guardar", color = Color.White)
+    Button(onClick = {}, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
+        Text(text = "Guardar", color = Color.Black)
     }
 }
 
@@ -111,7 +102,7 @@ fun BodyEditarPerfil(loginViewModel: LoginViewModel) {
                 .clickable { launcher.launch("image/*") }
         ) {
             Image(
-                painter = rememberImagePainter(data = imageUri ?: R.drawable.ic_launcher_background),
+                painter = rememberAsyncImagePainter(model = imageUri ?: R.drawable.ic_launcher_background),
                 contentDescription = "profile picture",
                 modifier = Modifier.fillMaxSize()
             )
@@ -143,17 +134,4 @@ fun NombreEditarPerfil(nombre: String, onTextChanged:(String) -> Unit) {
             focusedLabelColor = Color(0xFFADD8E6)
         )
     )
-}
-
-@Composable
-fun CerrarSesionButton(navController: NavController) {
-    Button(
-        onClick = { navController.navigate(Routes.Home.ruta) },
-        enabled = true,
-        border = BorderStroke(1.dp, Color.Red),
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.Red)
-    ) {
-        Text(text = "Cerrar sesion")
-    }
 }
