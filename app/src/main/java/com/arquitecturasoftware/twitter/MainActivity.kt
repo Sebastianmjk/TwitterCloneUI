@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arquitecturasoftware.twitter.home.HomeScreen
 import com.arquitecturasoftware.twitter.inicio.ui.AddTweet
+import com.arquitecturasoftware.twitter.inicio.ui.ComentScreen
 import com.arquitecturasoftware.twitter.inicio.ui.EditarPerfil
 import com.arquitecturasoftware.twitter.inicio.ui.InicioScreen
 import com.arquitecturasoftware.twitter.inicio.ui.ProfileScreen
@@ -65,6 +66,7 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
                         composable(Routes.RegistroArrobaNombre.ruta) { RegistroArrobaNombre(registroViewModel, navigationController) }
                         composable(Routes.EditarPerfil.ruta) { EditarPerfil(loginViewModel, navigationController) }
+                        composable(Routes.Comentarios.ruta) { ComentScreen(navigationController) }
                     }
                 }
             }

@@ -61,7 +61,7 @@ fun InicioScreen(navController: NavController) {
         Column(modifier = Modifier.padding(paddingValues)) {
             LazyColumn {
                 items(3) {
-                    TweetDesign()
+                    TweetDesign(navController)
                 }
             }
         }

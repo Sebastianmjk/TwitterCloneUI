@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -53,6 +54,7 @@ fun EditarPerfil(loginViewModel: LoginViewModel, navController: NavController) {
         HeaderEditarPerfil(navController)
         BodyEditarPerfil(loginViewModel)
         Spacer(Modifier.weight(1f))
+        HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
         Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
             Row (Modifier.padding(start = 16.dp, end = 16.dp)){
                 Spacer(modifier = Modifier.weight(1f))

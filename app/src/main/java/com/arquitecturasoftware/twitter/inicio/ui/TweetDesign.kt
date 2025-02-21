@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,15 +21,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun TweetDesign(){
+fun TweetDesign(navController: NavController){
     var chat by rememberSaveable { mutableStateOf(false) }
     var rt by rememberSaveable { mutableStateOf(false) }
     var like by rememberSaveable { mutableStateOf(false) }
@@ -55,12 +54,12 @@ fun TweetDesign(){
                 Row(Modifier.padding(top = 16.dp)){
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_chat), contentDescription = "", tint = Color(0xFF7E8B98)
-                        )
+                            painterResource(R.drawable.ic_chat), contentDescription = "", tint = Color(0xFF7E8B98))
                     }, selectedIcon = {
                         Icon(
-                        painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Red)
-                    }, isSelected = chat) { chat = !chat }
+                        painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Gray)
+                    }, isSelected = chat) { chat = !chat
+                    navController.navigate(Routes.Comentarios.ruta)}
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
                             painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color(0xFF7E8B98)

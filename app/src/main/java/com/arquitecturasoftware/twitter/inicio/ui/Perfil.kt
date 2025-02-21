@@ -86,7 +86,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel) 
             HorizontalDivider(color = Color.Gray, thickness = 1.dp)
             LazyColumn {
                 items(3) {
-                    TweetDesign()
+                    TweetDesign(navController)
                 }
             }
         }
