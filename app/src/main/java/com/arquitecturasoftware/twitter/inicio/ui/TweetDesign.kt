@@ -52,9 +52,6 @@ fun TweetDesign(){
                     Icon(painterResource(id = R.drawable.ic_dots), contentDescription = "dots", tint = Color.White)
                 }
                 TextBody("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.", Modifier.padding(bottom = 16.dp))
-                Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "profile", modifier = Modifier.fillMaxWidth().height(200.dp).clip(
-                    RoundedCornerShape(10)
-                ), contentScale = ContentScale.Crop)
                 Row(Modifier.padding(top = 16.dp)){
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(

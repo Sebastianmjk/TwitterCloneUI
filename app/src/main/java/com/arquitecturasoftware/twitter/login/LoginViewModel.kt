@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.login
 
+import android.net.Uri
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,6 +41,9 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
     private val _isLoginEnableNewPassword = MutableLiveData<Boolean>()
     val isLoginNewEnablePassword : LiveData<Boolean> = _isLoginEnableNewPassword
 
+    private val _imageUri = MutableLiveData<Uri?>()
+    val imageUri: LiveData<Uri?> = _imageUri
+
     fun onLoginChangesNewPassword(password:String, newPassword:String){
         _password.value = password
         _newPassword.value = newPassword
@@ -59,6 +63,10 @@ class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCas
     fun onLoginChangesPassword(password:String){
         _password.value = password
         _isLoginEnablePassword.value = enableLoginPassword(password)
+    }
+
+    fun setImageUri(uri: Uri?) {
+        _imageUri.value = uri
     }
 
     private fun enableLoginEmail(email: String): Boolean {

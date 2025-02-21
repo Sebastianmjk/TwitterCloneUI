@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.arquitecturasoftware.twitter.home.HomeScreen
 import com.arquitecturasoftware.twitter.inicio.ui.AddTweet
+import com.arquitecturasoftware.twitter.inicio.ui.EditarPerfil
 import com.arquitecturasoftware.twitter.inicio.ui.InicioScreen
 import com.arquitecturasoftware.twitter.inicio.ui.ProfileScreen
 import com.arquitecturasoftware.twitter.login.ui.LoginScreen
@@ -58,11 +59,12 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.Registro.ruta) { RegistroScreen(registroViewModel, navigationController) }
                         composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(registroViewModel, navigationController) }
                         composable(Routes.RegisterPassword.ruta) { ContraRegistro(registroViewModel, navigationController) }
-                        composable(Routes.Perfil.ruta) { ProfileScreen(navigationController) }
+                        composable(Routes.Perfil.ruta) { ProfileScreen(navigationController, loginViewModel) }
                         composable(Routes.OlvidarContrasena.ruta) { LoginOlvidarContrasena(loginViewModel, navigationController) }
                         composable(Routes.OlvidarContraCodigo.ruta) { LoginCodigoVerificacion(loginViewModel, navigationController) }
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
                         composable(Routes.RegistroArrobaNombre.ruta) { RegistroArrobaNombre(registroViewModel, navigationController) }
+                        composable(Routes.EditarPerfil.ruta) { EditarPerfil(loginViewModel, navigationController) }
                     }
                 }
             }

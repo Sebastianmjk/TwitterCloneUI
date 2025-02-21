@@ -1,10 +1,16 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,14 +37,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel) {
     Scaffold( containerColor = Color.Black,
         topBar = {
-            HeaderProfile()
+            HeaderProfile(navController, loginViewModel)
         },
         bottomBar = {
             MyBottomNavigationInicio(navController)
@@ -49,7 +58,7 @@ fun ProfileScreen(navController: NavController) {
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             Row{
-                var selectedButton by remember { mutableStateOf(SelectedButton.NONE) }
+                var selectedButton by remember { mutableStateOf(SelectedButton.PUBLICACIONES) }
                 TextButton(
                     onClick = { selectedButton = SelectedButton.PUBLICACIONES },
                     colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
@@ -85,24 +94,53 @@ fun ProfileScreen(navController: NavController) {
 }
 
 enum class SelectedButton {
-    PUBLICACIONES, RETWEETS, ME_GUSTA, NONE
+    PUBLICACIONES, RETWEETS, ME_GUSTA
 }
 
 @Composable
-fun HeaderProfile(){
-    Column (Modifier.fillMaxWidth()){
-        Row (Modifier.fillMaxWidth().padding(top = 26.dp, start = 16.dp, end = 16.dp)){
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "profile picture",
-                modifier = Modifier.clip(shape = CircleShape).size(55.dp)
-            )
+fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) {
+    val imageUri: Uri? by loginViewModel.imageUri.observeAsState(null)
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        loginViewModel.setImageUri(uri)
+    }
+
+    Column(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth().padding(top = 26.dp, start = 16.dp, end = 16.dp)) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(55.dp)
+                    .clickable { launcher.launch("image/*") }
+            ) {
+                Image(
+                    painter = rememberImagePainter(data = imageUri ?: R.drawable.ic_launcher_background),
+                    contentDescription = "profile picture",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
-            Button(onClick = { }, border = BorderStroke(1.dp, Color.Gray), colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black)) {
-                Text("Configurar Perfil")
+            Button(
+                onClick = { navController.navigate(Routes.EditarPerfil.ruta) },
+                border = BorderStroke(1.dp, Color.Gray),
+                colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black)
+            ) {
+                Text("Editar Perfil")
             }
         }
-        Text("AristiDevs", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp, start = 16.dp))
-        Text("@AristiDevs", color = Color.Gray, fontSize = 16.sp, modifier = Modifier.padding(start = 16.dp))
+        Text(
+            "AristiDevs",
+            color = Color.White,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp)
+        )
+        Text(
+            "@AristiDevs",
+            color = Color.Gray,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(start = 16.dp)
+        )
     }
 }

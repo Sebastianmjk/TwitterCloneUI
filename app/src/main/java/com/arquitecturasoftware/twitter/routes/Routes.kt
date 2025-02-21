@@ -14,4 +14,5 @@ sealed class Routes(val ruta : String) {
     data object OlvidarContraCodigo : Routes("olvidarcontracodigo")
     data object LoginNewContrasena : Routes("loginnewcontrasena")
     data object RegistroArrobaNombre : Routes("registroarobanombre")
+    data object EditarPerfil : Routes("editarperfil")
 }

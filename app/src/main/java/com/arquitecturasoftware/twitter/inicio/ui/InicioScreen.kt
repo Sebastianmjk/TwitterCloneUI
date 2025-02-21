@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CircleNotifications
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.FabPosition
@@ -48,7 +48,7 @@ fun InicioScreen(navController: NavController) {
     DisableBackPressHandler()
     Scaffold( containerColor = Color.Black,
         topBar = {
-            HeaderInicio(onCliclkIcon = { /*inicioViewModel.onDialogOpened()*/ })
+            HeaderInicio(navController)
         },
         bottomBar = {
             MyBottomNavigationInicio(navController)
@@ -69,9 +69,9 @@ fun InicioScreen(navController: NavController) {
 }
 
 @Composable
-fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
+fun HeaderInicio(navController: NavController) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -88,10 +88,10 @@ fun HeaderInicio(onCliclkIcon:(String) -> Unit, modifier: Modifier = Modifier) {
             modifier = Modifier.clip(shape = CircleShape).size(55.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { onCliclkIcon ("Configuracion") }, colors = IconButtonDefaults.iconButtonColors(
+        IconButton(onClick = {navController.navigate(Routes.Home.ruta) }, colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         )) {
-            Icon(imageVector = Icons.Filled.CircleNotifications, contentDescription = "Configuracion")
+            Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar sesion")
         }
     }
 }
