@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(/*private val loginUseCase: LoginUseCase*/) :ViewModel() {
+class LoginViewModel @Inject constructor() :ViewModel() {
 
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
