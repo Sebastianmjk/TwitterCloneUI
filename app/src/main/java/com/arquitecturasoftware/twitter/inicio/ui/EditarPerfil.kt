@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,19 +43,26 @@ import coil.compose.rememberAsyncImagePainter
 import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
+import java.io.File
 
 @Composable
 fun EditarPerfil(loginViewModel: LoginViewModel, navController: NavController) {
-    Column (modifier = Modifier.fillMaxWidth().imePadding()){
+    val context = LocalContext.current
+    Column(modifier = Modifier.fillMaxWidth().imePadding()) {
         HeaderEditarPerfil(navController)
         BodyEditarPerfil(loginViewModel)
         Spacer(Modifier.weight(1f))
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
         Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(start = 16.dp, end = 16.dp, bottom = 48.dp)) {
-                GuardarButton()
+            GuardarButton {
+                loginViewModel.imageUri.value?.let { uri ->
+                    loginViewModel.updateProfilePhoto(context, uri)
+                    navController.navigate(Routes.Perfil.ruta)
+                }
             }
         }
     }
+}
 
 @Composable
 fun HeaderEditarPerfil(navController: NavController) {
@@ -78,8 +86,17 @@ fun EditarPerfilTittle(){
 }
 
 @Composable
-fun GuardarButton(){
-    Button(onClick = {}, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
+fun GuardarButton(onClick: () -> Unit) {
+    Button(
+        onClick = { onClick() },
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black,
+            disabledContainerColor = Color.LightGray,
+            disabledContentColor = Color.Gray
+        )
+    ) {
         Text(text = "Guardar", color = Color.Black)
     }
 }
@@ -88,10 +105,14 @@ fun GuardarButton(){
 fun BodyEditarPerfil(loginViewModel: LoginViewModel) {
     val nombre: String by loginViewModel.nombre.observeAsState("")
     val imageUri: Uri? by loginViewModel.imageUri.observeAsState(null)
+    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        loginViewModel.setImageUri(uri)
+        uri?.let {
+            loginViewModel.setImageUri(it)
+            loginViewModel.updateProfilePhoto(context, it)
+        }
     }
 
     Column(Modifier.padding(16.dp)) {

@@ -26,7 +26,6 @@ import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.login.ui.LoginCodigoVerificacion
 import com.arquitecturasoftware.twitter.login.ui.LoginNewContrasena
 import com.arquitecturasoftware.twitter.login.ui.LoginOlvidarContrasena
-import com.arquitecturasoftware.twitter.registro.CodigoVerificacion
 import com.arquitecturasoftware.twitter.registro.ContraRegistro
 import com.arquitecturasoftware.twitter.registro.RegistroArrobaNombre
 import com.arquitecturasoftware.twitter.registro.RegistroScreen
@@ -62,7 +61,6 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.LoginPassword.ruta) { LoginScreen2(loginViewModel, navigationController) }
                         composable(Routes.Home.ruta) { HomeScreen(navigationController) }
                         composable(Routes.Registro.ruta) { RegistroScreen(registroViewModel, navigationController) }
-                        composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(registroViewModel, navigationController) }
                         composable(Routes.RegisterPassword.ruta) { ContraRegistro(registroViewModel, navigationController) }
                         composable(Routes.Perfil.ruta) { ProfileScreen(navigationController, loginViewModel, sharedViewModel) }
                         composable(Routes.OlvidarContrasena.ruta) { LoginOlvidarContrasena(loginViewModel, navigationController) }

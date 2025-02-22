@@ -8,13 +8,16 @@ import com.arquitecturasoftware.twitter.api.response.TweetRequest
 import com.arquitecturasoftware.twitter.api.response.TweetResponse
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import com.arquitecturasoftware.twitter.api.response.UsersTweetLikedRetweetedResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -62,8 +65,12 @@ interface ApiService {
     @GET("/user/me/profile_photo")
     suspend fun getProfilePhoto(): Response<ProfilePhotoResponse>
 
+    @Multipart
     @POST("/user/me/profile_photo")
-    suspend fun postProfilePhoto(): Response<ProfilePhotoResponse>
+    suspend fun postProfilePhoto(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part
+    ): Response<ProfilePhotoResponse>
 
     @POST("/tweet/")
     suspend fun postTweet(

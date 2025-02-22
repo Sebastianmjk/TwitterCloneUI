@@ -130,6 +130,6 @@ fun PoliticsTextContra() {
 @Composable
 fun SiguienteButtonContrasena(loginEnable: Boolean, navController: NavController) {
     Button(onClick = { navController.navigate(Routes.RegistroArrobaNombre.ruta) }, enabled = loginEnable, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
-        Text(text = "Registrarte")
+        Text(text = "Siguiente")
     }
 }

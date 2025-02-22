@@ -124,23 +124,15 @@ enum class SelectedButton {
 
 @Composable
 fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) {
-    val imageUri: Uri? by loginViewModel.imageUri.observeAsState(null)
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        loginViewModel.setImageUri(uri)
-    }
-
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth().padding(top = 36.dp, start = 16.dp, end = 16.dp)) {
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(55.dp)
-                    .clickable { launcher.launch("image/*") }
             ) {
                 Image(
-                    painter = rememberImagePainter(data = imageUri ?: R.drawable.ic_launcher_background),
+                    painter = rememberImagePainter(data = R.drawable.ic_launcher_background),
                     contentDescription = "profile picture",
                     modifier = Modifier.fillMaxSize()
                 )

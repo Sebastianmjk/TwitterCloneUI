@@ -155,6 +155,6 @@ fun SiguienteButtonNombreArroba(loginEnable: Boolean, onClick: () -> Unit) {
             disabledContentColor = Color.Gray
         )
     ) {
-        Text(text = "Siguiente")
+        Text(text = "Registrarse")
     }
 }

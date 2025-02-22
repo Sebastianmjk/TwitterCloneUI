@@ -25,7 +25,6 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.registro.CodigoTextTittle
-import com.arquitecturasoftware.twitter.registro.CodigoVerificacion
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
@@ -45,7 +44,6 @@ fun LoginCodigoVerificacion(loginViewModel: LoginViewModel, navigationController
             Spacer(modifier = Modifier.size(2.dp))
             CodigoTextTittle()
             DescripcionCodigoOlvidarContra()
-            CodigoVerificacion(codigo) { loginViewModel.onCodigoChanges(it) }
             Spacer(modifier = Modifier.weight(1f))
             HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
             Box(modifier = Modifier
