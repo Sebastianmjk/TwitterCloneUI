@@ -17,8 +17,10 @@ class TweetsViewModel : ViewModel() {
             try {
                 val response = RetrofitHelper.api.getTweets()
                 if (response.isSuccessful) {
-                    _tweets.value = response.body()?.tweets ?: emptyList()
+                    Log.e("TweetsViewModel", "response: ${response.body()}")
+                    _tweets.value = response.body() ?: emptyList()
                 } else {
+                    Log.e("TweetsViewModel", "response: ${response.body()}")
                     Log.e("TweetsViewModel", "Failed to fetch tweets")
                 }
             } catch (e: Exception) {

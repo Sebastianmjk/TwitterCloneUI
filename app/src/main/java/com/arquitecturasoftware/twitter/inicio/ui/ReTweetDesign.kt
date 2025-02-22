@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
 
 @Composable
-fun ReTweetDesign(navController: NavController, retweeter: String) {
+fun ReTweetDesign(navController: NavController, retweeter: String, tweet: Tweet) {
     Column(modifier = Modifier.padding(10.dp)) {
         Icon(
             painter = painterResource(id = R.drawable.ic_rt),
@@ -28,5 +28,5 @@ fun ReTweetDesign(navController: NavController, retweeter: String) {
             modifier = Modifier.padding(start = 8.dp)
         )
     }
-    TweetDesign(navController)
+    TweetDesign(navController, tweet)
 }

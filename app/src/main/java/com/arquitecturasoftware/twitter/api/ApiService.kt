@@ -8,6 +8,7 @@ import com.arquitecturasoftware.twitter.api.response.TweetRequest
 import com.arquitecturasoftware.twitter.api.response.TweetResponse
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import com.arquitecturasoftware.twitter.api.response.UsersTweetLikedRetweetedResponse
+import com.arquitecturasoftware.twitter.inicio.ui.Tweet
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -51,7 +52,7 @@ interface ApiService {
     suspend fun getTweetById(@Path("tweet_id") tweetId: Int): Response<UsersTweetLikedRetweetedResponse>
 
     @GET("/tweets/")
-    suspend fun getTweets(): Response<UsersTweetLikedRetweetedResponse>
+    suspend fun getTweets(): Response<List<Tweet>>
 
     @GET("/tweets/{tweet_id}/likes/count")
     suspend fun getLikesCount(@Path("tweet_id") tweetId: Int): Response<String>

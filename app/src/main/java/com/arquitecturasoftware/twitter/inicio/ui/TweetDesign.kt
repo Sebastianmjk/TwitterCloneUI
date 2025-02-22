@@ -37,18 +37,10 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
     Column {
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
         Row(Modifier.fillMaxWidth().padding(10.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "profile picture",
-                modifier = Modifier.clip(shape = CircleShape).size(55.dp)
-            )
             Column(Modifier.fillMaxWidth().padding(16.dp)) {
                 Row(Modifier.fillMaxWidth()) {
                     TextTitle("User ${tweet.user_id}", Modifier.padding(end = 8.dp))
-                    DefaultTitle("@UserHandle", Modifier.padding(end = 8.dp))
-                    DefaultTitle("4h", Modifier.padding(end = 8.dp))
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(painterResource(id = R.drawable.ic_dots), contentDescription = "dots", tint = Color.White)
                 }
                 TextBody(tweet.contenido, Modifier.padding(bottom = 16.dp))
                 Row(Modifier.padding(top = 16.dp)) {

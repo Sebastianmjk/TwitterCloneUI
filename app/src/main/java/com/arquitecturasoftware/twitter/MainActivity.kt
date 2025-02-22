@@ -19,6 +19,7 @@ import com.arquitecturasoftware.twitter.inicio.ui.ComentScreen
 import com.arquitecturasoftware.twitter.inicio.ui.EditarPerfil
 import com.arquitecturasoftware.twitter.inicio.ui.InicioScreen
 import com.arquitecturasoftware.twitter.inicio.ui.ProfileScreen
+import com.arquitecturasoftware.twitter.inicio.ui.TweetsViewModel
 import com.arquitecturasoftware.twitter.login.ui.LoginScreen
 import com.arquitecturasoftware.twitter.login.ui.LoginScreen2
 import com.arquitecturasoftware.twitter.login.LoginViewModel
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
     private val registroViewModel: RegistroViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by viewModels()
     private val addTweetViewModel: AddTweetViewModel by viewModels()
+    private val tweetsViewModel: TweetsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         navController = navigationController,
                         startDestination = Routes.Home.ruta
                     ) {
-                        composable(Routes.Inicio.ruta) { InicioScreen(navigationController, sharedViewModel) }
+                        composable(Routes.Inicio.ruta) { InicioScreen(navigationController, sharedViewModel, tweetsViewModel) }
                         composable(Routes.AddTweet.ruta) { AddTweet(navigationController, addTweetViewModel) }
                         composable(Routes.LoginEmail.ruta) { LoginScreen(loginViewModel, navigationController) }
                         composable(Routes.LoginPassword.ruta) { LoginScreen2(loginViewModel, navigationController) }

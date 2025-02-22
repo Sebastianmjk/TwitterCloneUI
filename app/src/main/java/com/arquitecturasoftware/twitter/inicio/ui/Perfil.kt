@@ -93,30 +93,35 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             if (selectedButton == SelectedButton.PUBLICACIONES) {
                 LazyColumn {
                     items(3) {
-                        TweetDesign(navController)
+                        val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
+                        TweetDesign(navController, sampleTweet)
                     }
                 }
             } else if (selectedButton == SelectedButton.RETWEETS) {
                 LazyColumn {
                     items(3) {
-                        TweetDesign(navController)
+                        val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
+                        TweetDesign(navController, sampleTweet)
                     }
                 }
             } else if (selectedButton == SelectedButton.ME_GUSTA) {
                 LazyColumn {
                     items(3) {
-                        TweetDesign(navController)
+                        val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
+                        TweetDesign(navController, sampleTweet)
                     }
                 }
             }
             LazyColumn {
                 items(3) {
-                    TweetDesign(navController)
+                    val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
+                    TweetDesign(navController, sampleTweet)
                 }
             }
         }
     }
 }
+
 
 enum class SelectedButton {
     PUBLICACIONES, RETWEETS, ME_GUSTA
