@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -44,8 +45,10 @@ import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel) {
+fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel, tweetsViewModel: TweetsViewModel) {
     DisableBackPressHandler()
+    val tweets by tweetsViewModel.tweets.observeAsState(emptyList())
+
     Scaffold(
         containerColor = Color.Black,
         topBar = {
@@ -61,11 +64,15 @@ fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel)
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             LazyColumn {
-                items(3) {
-                    TweetDesign(navController)
+                items(tweets) { tweet ->
+                    TweetDesign(navController, tweet)
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        tweetsViewModel.fetchTweets()
     }
 }
 

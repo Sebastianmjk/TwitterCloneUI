@@ -30,7 +30,7 @@ import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun TweetDesign(navController: NavController){
+fun TweetDesign(navController: NavController, tweet: Tweet) {
     var chat by rememberSaveable { mutableStateOf(false) }
     var rt by rememberSaveable { mutableStateOf(false) }
     var like by rememberSaveable { mutableStateOf(false) }
@@ -42,31 +42,31 @@ fun TweetDesign(navController: NavController){
                 contentDescription = "profile picture",
                 modifier = Modifier.clip(shape = CircleShape).size(55.dp)
             )
-            Column (Modifier.fillMaxWidth().padding(16.dp)){
-                Row(Modifier.fillMaxWidth()){
-                    TextTitle("Aris", Modifier.padding(end = 8.dp))
-                    DefaultTitle("@AristiDevs", Modifier.padding(end = 8.dp))
+            Column(Modifier.fillMaxWidth().padding(16.dp)) {
+                Row(Modifier.fillMaxWidth()) {
+                    TextTitle("User ${tweet.user_id}", Modifier.padding(end = 8.dp))
+                    DefaultTitle("@UserHandle", Modifier.padding(end = 8.dp))
                     DefaultTitle("4h", Modifier.padding(end = 8.dp))
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(painterResource(id = R.drawable.ic_dots), contentDescription = "dots", tint = Color.White)
                 }
-                TextBody("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.", Modifier.padding(bottom = 16.dp))
-                Row(Modifier.padding(top = 16.dp)){
+                TextBody(tweet.contenido, Modifier.padding(bottom = 16.dp))
+                Row(Modifier.padding(top = 16.dp)) {
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
                             painterResource(R.drawable.ic_chat), contentDescription = "", tint = Color(0xFF7E8B98))
                     }, selectedIcon = {
                         Icon(
-                        painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Gray)
+                            painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Gray)
                     }, isSelected = chat) { chat = !chat
-                    navController.navigate(Routes.Comentarios.ruta)}
+                        navController.navigate(Routes.Comentarios.ruta) }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
                             painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color(0xFF7E8B98)
                         )
                     }, selectedIcon = {
                         Icon(
-                        painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color.Green)
+                            painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color.Green)
                     }, isSelected = rt) { rt = !rt }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
@@ -74,7 +74,7 @@ fun TweetDesign(navController: NavController){
                         )
                     }, selectedIcon = {
                         Icon(
-                        painterResource(R.drawable.ic_like_filled), contentDescription = "", tint = Color.Red)
+                            painterResource(R.drawable.ic_like_filled), contentDescription = "", tint = Color.Red)
                     }, isSelected = like) { like = !like }
                 }
             }
