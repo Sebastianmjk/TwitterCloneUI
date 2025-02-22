@@ -42,17 +42,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.api.TokenManager
+import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, sharedViewModel: SharedViewModel) {
+fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, sharedViewModel: SharedViewModel,profileViewModel: ProfileViewModel) {
     DisableBackPressHandler()
-    Scaffold(
+    val token = "Bearer " + TokenManager.accessToken
+    val profile by profileViewModel.profile.observeAsState()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchProfile(token)
+    }
+        Scaffold(
         containerColor = Color.Black,
         topBar = {
-            HeaderProfile(navController, loginViewModel)
+            HeaderProfile(navController, loginViewModel,profile)
         },
         bottomBar = {
             MyBottomNavigationInicio(navController, sharedViewModel)
@@ -90,34 +98,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
                 }
             }
             HorizontalDivider(color = Color.Gray, thickness = 1.dp)
-            if (selectedButton == SelectedButton.PUBLICACIONES) {
-                LazyColumn {
-                    items(3) {
-                        val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
-                        TweetDesign(navController, sampleTweet)
-                    }
-                }
-            } else if (selectedButton == SelectedButton.RETWEETS) {
-                LazyColumn {
-                    items(3) {
-                        val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
-                        TweetDesign(navController, sampleTweet)
-                    }
-                }
-            } else if (selectedButton == SelectedButton.ME_GUSTA) {
-                LazyColumn {
-                    items(3) {
-                        val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
-                        TweetDesign(navController, sampleTweet)
-                    }
-                }
-            }
-            LazyColumn {
-                items(3) {
-                    val sampleTweet = Tweet(id = it, user_id = 1, contenido = "Sample tweet content $it")
-                    TweetDesign(navController, sampleTweet)
-                }
-            }
+
         }
     }
 }
@@ -128,7 +109,7 @@ enum class SelectedButton {
 }
 
 @Composable
-fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) {
+fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel, profile: UsersProfileResponse?) {
     val imageUri: Uri? by loginViewModel.imageUri.observeAsState(null)
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -143,13 +124,7 @@ fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) 
                     .clip(CircleShape)
                     .size(55.dp)
                     .clickable { launcher.launch("image/*") }
-            ) {
-                Image(
-                    painter = rememberImagePainter(data = imageUri ?: R.drawable.ic_launcher_background),
-                    contentDescription = "profile picture",
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            )
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = { navController.navigate(Routes.EditarPerfil.ruta) },
@@ -168,14 +143,14 @@ fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel) 
         ) {
             Column (Modifier.padding(end = 24.dp)) {
                 Text(
-                    "AristiDevs",
+                    profile?.name ?: "Loading...",
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp)
                 )
                 Text(
-                    "@AristiDevs",
+                    "@${profile?.name ?: "Loading..."}",
                     color = Color.Gray,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 16.dp)

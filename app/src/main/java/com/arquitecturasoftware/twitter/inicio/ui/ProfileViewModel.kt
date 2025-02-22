@@ -37,4 +37,24 @@ class ProfileViewModel : ViewModel() {
             false
         }
     }
+
+    private val _profile = MutableLiveData<UsersProfileResponse?>()
+    val profile: LiveData<UsersProfileResponse?> = _profile
+
+    fun fetchProfile(token: String) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getProfile(token)
+                if (response.isSuccessful) {
+                    _profile.value = response.body()
+                } else {
+                    _profile.value = null
+                    Log.e("ProfileViewModel", "Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                _profile.value = null
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
 }

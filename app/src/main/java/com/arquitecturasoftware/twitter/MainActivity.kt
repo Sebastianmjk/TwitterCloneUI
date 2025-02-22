@@ -68,7 +68,10 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.Registro.ruta) { RegistroScreen(registroViewModel, navigationController) }
                         composable(Routes.CodigoVerificacion.ruta) { CodigoVerificacion(registroViewModel, navigationController) }
                         composable(Routes.RegisterPassword.ruta) { ContraRegistro(registroViewModel, navigationController) }
-                        composable(Routes.Perfil.ruta) { ProfileScreen(navigationController, loginViewModel, sharedViewModel) }
+                        composable(Routes.Perfil.ruta) { ProfileScreen(
+                            navigationController, loginViewModel, sharedViewModel,
+                            profileViewModel = profileViewModel
+                        ) }
                         composable(Routes.OlvidarContrasena.ruta) { LoginOlvidarContrasena(loginViewModel, navigationController) }
                         composable(Routes.OlvidarContraCodigo.ruta) { LoginCodigoVerificacion(loginViewModel, navigationController) }
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }

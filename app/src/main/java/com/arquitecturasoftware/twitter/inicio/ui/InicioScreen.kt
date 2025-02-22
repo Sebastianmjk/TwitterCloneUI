@@ -84,11 +84,7 @@ fun HeaderInicio(navController: NavController) {
             .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "profile picture",
-            modifier = Modifier.clip(shape = CircleShape).size(55.dp)
-        )
+
         Spacer(modifier = Modifier.weight(0.9f))
         Image(
             painter = painterResource(id = R.drawable.logo_twitter),

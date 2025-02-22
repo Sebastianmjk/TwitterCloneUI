@@ -28,7 +28,7 @@ interface ApiService {
     suspend fun getUsers(): Response<UsersProfileResponse>
 
     @GET("/profile/")
-    suspend fun getProfile(): Response<UsersProfileResponse>
+    suspend fun getProfile(@Header ("Authorization") token: String): Response<UsersProfileResponse>
 
     @GET("/users/tweets/liked")
     suspend fun getLikedTweets(): Response<UsersTweetLikedRetweetedResponse>
