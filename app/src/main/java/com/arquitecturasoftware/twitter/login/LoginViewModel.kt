@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arquitecturasoftware.twitter.api.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
+import com.arquitecturasoftware.twitter.api.TokenManager
 import com.arquitecturasoftware.twitter.api.response.LoginRequest
 import com.arquitecturasoftware.twitter.api.response.TokenResponse
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
@@ -61,7 +62,12 @@ class LoginViewModel  :ViewModel() {
         return try {
             val response = apiService.getLogin(email, password)
             if (response.isSuccessful) {
-                _loginResult.value = response.body()
+                val tokenResponse = response.body()
+                _loginResult.value = tokenResponse
+                tokenResponse?.let {
+                    TokenManager.accessToken = it.accessToken
+                }
+
                 true
             } else {
                 _loginResult.value = null
