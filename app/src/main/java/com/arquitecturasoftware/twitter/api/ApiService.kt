@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.api
 
+import UpdateProfileRequest
 import com.arquitecturasoftware.twitter.api.response.LoginRequest
 import com.arquitecturasoftware.twitter.api.response.ProfilePhotoResponse
 import com.arquitecturasoftware.twitter.api.response.RegisterRequest
@@ -16,6 +17,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiService {
@@ -71,5 +73,8 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body tweetRequest: TweetRequest
     ): Response<TweetResponse>
+
+    @PUT("/profile/")
+    suspend fun updateProfile(@Body updateProfileRequest: UpdateProfileRequest): Response<UsersProfileResponse>
 }
 

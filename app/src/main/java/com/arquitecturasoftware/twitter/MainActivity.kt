@@ -19,6 +19,7 @@ import com.arquitecturasoftware.twitter.inicio.ui.ComentScreen
 import com.arquitecturasoftware.twitter.inicio.ui.EditarPerfil
 import com.arquitecturasoftware.twitter.inicio.ui.InicioScreen
 import com.arquitecturasoftware.twitter.inicio.ui.ProfileScreen
+import com.arquitecturasoftware.twitter.inicio.ui.ProfileViewModel
 import com.arquitecturasoftware.twitter.inicio.ui.TweetsViewModel
 import com.arquitecturasoftware.twitter.login.ui.LoginScreen
 import com.arquitecturasoftware.twitter.login.ui.LoginScreen2
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
     private val sharedViewModel: SharedViewModel by viewModels()
     private val addTweetViewModel: AddTweetViewModel by viewModels()
     private val tweetsViewModel: TweetsViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,7 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.OlvidarContraCodigo.ruta) { LoginCodigoVerificacion(loginViewModel, navigationController) }
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
                         composable(Routes.RegistroArrobaNombre.ruta) { RegistroArrobaNombre(registroViewModel, navigationController) }
-                        composable(Routes.EditarPerfil.ruta) { EditarPerfil(loginViewModel, navigationController) }
+                        composable(Routes.EditarPerfil.ruta) { EditarPerfil(loginViewModel, navigationController, profileViewModel) }
                         composable(Routes.Comentarios.ruta) { ComentScreen(navigationController) }
                     }
                 }

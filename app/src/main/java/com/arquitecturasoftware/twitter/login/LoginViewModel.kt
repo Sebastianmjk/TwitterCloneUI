@@ -81,6 +81,14 @@ class LoginViewModel  :ViewModel() {
         }
     }
 
+    fun setNombre(nombre: String) {
+        _nombre.value = nombre
+    }
+
+    fun setPassword(password: String) {
+        _password.value = password
+    }
+
     fun onLoginChangesNewPassword(password:String, newPassword:String){
         _password.value = password
         _newPassword.value = newPassword
