@@ -165,7 +165,7 @@ fun FechaNacimiento(fechaNacimiento: String, onTextChanged:(String) -> Unit) {
 
 @Composable
 fun SiguienteButtonRegister(loginEnable: Boolean, navController: NavController) {
-    Button(onClick = { navController.navigate(Routes.CodigoVerificacion.ruta) }, enabled = loginEnable, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
+    Button(onClick = { navController.navigate(Routes.RegisterPassword.ruta) }, enabled = loginEnable, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
         Text(text = "Siguiente")
     }
 }

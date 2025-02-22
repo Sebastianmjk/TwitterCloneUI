@@ -82,24 +82,25 @@ class RegistroViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    fun registerUser() {
-        viewModelScope.launch {
-            try {
-                val request = RegisterRequest(
-                    name = _nombre.value ?: "",
-                    email = _email.value ?: "",
-                    password = _password.value ?: "",
-                    fullName = _arrobaNombre.value ?: ""
-                )
-                val response = apiService.registerUser(request)
-                if (response.isSuccessful) {
-                    _registrationResult.value = response.body()
-                } else {
-                    _registrationResult.value = null
-                }
-            } catch (e: Exception) {
+    suspend fun registerUser():Boolean {
+        return try {
+            val request = RegisterRequest(
+                name = _nombre.value ?: "",
+                email = _email.value ?: "",
+                password = _password.value ?: "",
+                fullName = _arrobaNombre.value ?: ""
+            )
+            val response = apiService.registerUser(request)
+            if (response.isSuccessful) {
+                _registrationResult.value = response.body()
+                true
+            } else {
                 _registrationResult.value = null
+                false
             }
+        } catch (e: Exception) {
+            _registrationResult.value = null
+            false
         }
     }
 

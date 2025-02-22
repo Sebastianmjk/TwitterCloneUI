@@ -1,6 +1,7 @@
 package com.arquitecturasoftware.twitter.login
 
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.arquitecturasoftware.twitter.api.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.response.LoginRequest
+import com.arquitecturasoftware.twitter.api.response.TokenResponse
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -51,26 +53,24 @@ class LoginViewModel  :ViewModel() {
     private val _imageUri = MutableLiveData<Uri?>()
     val imageUri: LiveData<Uri?> = _imageUri
 
-    private val _loginResult = MutableLiveData<UsersProfileResponse?>()
-    val loginResult: LiveData<UsersProfileResponse?> = _loginResult
+    private val _loginResult = MutableLiveData<TokenResponse?>()
+    val loginResult: LiveData<TokenResponse?> = _loginResult
 
-    fun login(email: String, password: String) {
+    suspend fun login(email: String, password: String): Boolean {
         _isLoading.value = true
-        viewModelScope.launch {
-            val loginRequest = LoginRequest(
-                grantType = "password",
-                username = email,
-                password = password,
-                scope = null,
-                clientId = null,
-                clientSecret = null
-            )
-            val response = apiService.getLogin(loginRequest)
+        return try {
+            val response = apiService.getLogin(email, password)
             if (response.isSuccessful) {
                 _loginResult.value = response.body()
+                true
             } else {
                 _loginResult.value = null
+                false
             }
+        } catch (e: Exception) {
+            _loginResult.value = null
+            false
+        } finally {
             _isLoading.value = false
         }
     }

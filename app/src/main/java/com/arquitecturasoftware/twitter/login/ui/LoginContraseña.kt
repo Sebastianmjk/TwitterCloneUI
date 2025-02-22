@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.login.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -27,9 +28,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,9 +45,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.arquitecturasoftware.twitter.api.response.TokenResponse
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController) {
@@ -57,7 +65,14 @@ fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController) {
             false
         )
         val password: String by loginViewModel.password.observeAsState("")
-        val loginResult: UsersProfileResponse? by loginViewModel.loginResult.observeAsState(null)
+        val loginResult: TokenResponse? by loginViewModel.loginResult.observeAsState(null)
+        val coroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(loginResult) {
+            loginResult?.let {
+                navController.navigate(Routes.Inicio.ruta)
+            }
+        }
         if (isLoading) {
             Box(modifier = Modifier
                 .fillMaxSize()
@@ -88,18 +103,15 @@ fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController) {
                         OlvidarContrasena(navController)
                         Spacer(modifier = Modifier.width(10.dp))
                         IniciarButton(isLoginEnablePassword) {
-                            loginViewModel.login(
-                                email = email,
-                                password = password
-                            )
-                            if (loginResult != null) {
-                                navController.navigate(Routes.Home.ruta)
-                            } else {
-                                Toast.makeText(
-                                    navController.context,
-                                    "Usuario o contraseña incorrectos",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            coroutineScope.launch {
+                                val loginSuccessful = loginViewModel.login(email, password)
+                                if (!loginSuccessful) {
+                                    Toast.makeText(
+                                        navController.context,
+                                        "Usuario o contraseña incorrectos",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
                     }
