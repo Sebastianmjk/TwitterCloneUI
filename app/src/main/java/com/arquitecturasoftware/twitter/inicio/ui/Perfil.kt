@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -62,8 +63,8 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).padding(bottom = 8.dp)) {
+            var selectedButton by remember { mutableStateOf(SelectedButton.PUBLICACIONES) }
             Row {
-                var selectedButton by remember { mutableStateOf(SelectedButton.PUBLICACIONES) }
                 TextButton(
                     onClick = { selectedButton = SelectedButton.PUBLICACIONES },
                     colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
@@ -89,6 +90,25 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
                 }
             }
             HorizontalDivider(color = Color.Gray, thickness = 1.dp)
+            if (selectedButton == SelectedButton.PUBLICACIONES) {
+                LazyColumn {
+                    items(3) {
+                        TweetDesign(navController)
+                    }
+                }
+            } else if (selectedButton == SelectedButton.RETWEETS) {
+                LazyColumn {
+                    items(3) {
+                        TweetDesign(navController)
+                    }
+                }
+            } else if (selectedButton == SelectedButton.ME_GUSTA) {
+                LazyColumn {
+                    items(3) {
+                        TweetDesign(navController)
+                    }
+                }
+            }
             LazyColumn {
                 items(3) {
                     TweetDesign(navController)

@@ -1,5 +1,7 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -19,8 +21,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,19 +35,43 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.api.TokenManager
+import com.arquitecturasoftware.twitter.routes.Routes
+import kotlinx.coroutines.launch
 
 @Composable
-fun AddTweet(navigationController: NavHostController) {
+fun AddTweet(navigationController: NavHostController, addTweetViewModel: AddTweetViewModel) {
+    val content: String by addTweetViewModel.content.observeAsState("")
+    val addResult: String by addTweetViewModel.addResult.observeAsState("")
+    val token = "Bearer "+TokenManager.accessToken
+    val coroutineScope = rememberCoroutineScope()
+
     Column(modifier = Modifier.fillMaxSize()) {
-        HeaderAddTweet(Modifier.align(Alignment.Start), navigationController)
+        HeaderAddTweet(Modifier.align(Alignment.Start), navigationController) {
+            coroutineScope.launch {
+                val success = addTweetViewModel.addTweet(
+                    content = content,
+                    token = token
+                )
+                if (success) {
+                    navigationController.navigate(Routes.Inicio.ruta)
+                } else {
+                    Log.i("isError", "Error")
+                    Toast.makeText(
+                        navigationController.context,
+                        "Tweet failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
         Spacer(modifier = Modifier.size(4.dp))
-        Tweetear(Modifier.align(Alignment.CenterHorizontally))
+        Tweetear(Modifier.align(Alignment.CenterHorizontally), addTweetViewModel, content)
     }
 }
 
 @Composable
-fun Tweetear(modifier: Modifier) {
-    var tweet by remember { mutableStateOf("") }
+fun Tweetear(modifier: Modifier, addTweetViewModel: AddTweetViewModel,content:String) {
     Row(modifier.fillMaxWidth().padding(16.dp)) {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -52,8 +80,8 @@ fun Tweetear(modifier: Modifier) {
         )
         Spacer(modifier = Modifier.size(16.dp))
         TextField(
-            value = tweet,
-            onValueChange = { tweet = it },
+            value = content,
+            onValueChange = { addTweetViewModel.updateContent(it) },
             maxLines = 12,
             label = { Text("¿Qué está pensando?") },
             modifier = Modifier.weight(1f),
@@ -70,7 +98,7 @@ fun Tweetear(modifier: Modifier) {
 }
 
 @Composable
-fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController) {
+fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController,onClick:()->Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -86,7 +114,7 @@ fun HeaderAddTweet(modifier: Modifier = Modifier, navController: NavController) 
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = { },
+            onClick = {onClick()},
             modifier = Modifier
                 .weight(1f)
         ) {

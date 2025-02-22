@@ -5,6 +5,7 @@ import com.arquitecturasoftware.twitter.api.response.ProfilePhotoResponse
 import com.arquitecturasoftware.twitter.api.response.RegisterRequest
 import com.arquitecturasoftware.twitter.api.response.TokenResponse
 import com.arquitecturasoftware.twitter.api.response.TweetRequest
+import com.arquitecturasoftware.twitter.api.response.TweetResponse
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import com.arquitecturasoftware.twitter.api.response.UsersTweetLikedRetweetedResponse
 import retrofit2.Response
@@ -52,9 +53,6 @@ interface ApiService {
     @GET("/tweets/")
     suspend fun getTweets(): Response<UsersTweetLikedRetweetedResponse>
 
-    @POST("/tweet/")
-    suspend fun postTweet(@Body tweetRequest: TweetRequest): Response<String>
-
     @GET("/tweets/{tweet_id}/likes/count")
     suspend fun getLikesCount(@Path("tweet_id") tweetId: Int): Response<String>
 
@@ -66,5 +64,11 @@ interface ApiService {
 
     @POST("/user/me/profile_photo")
     suspend fun postProfilePhoto(): Response<ProfilePhotoResponse>
+
+    @POST("/tweet/")
+    suspend fun postTweet(
+        @Header("Authorization") token: String,
+        @Body tweetRequest: TweetRequest
+    ): Response<TweetResponse>
 }
 
