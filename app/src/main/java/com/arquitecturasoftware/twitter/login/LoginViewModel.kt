@@ -5,11 +5,18 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.arquitecturasoftware.twitter.api.ApiService
+import com.arquitecturasoftware.twitter.api.RetrofitHelper
+import com.arquitecturasoftware.twitter.api.response.LoginRequest
+import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class LoginViewModel @Inject constructor() :ViewModel() {
+class LoginViewModel  :ViewModel() {
+
+    private val apiService: ApiService = RetrofitHelper.api
 
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
@@ -44,18 +51,43 @@ class LoginViewModel @Inject constructor() :ViewModel() {
     private val _imageUri = MutableLiveData<Uri?>()
     val imageUri: LiveData<Uri?> = _imageUri
 
+    private val _loginResult = MutableLiveData<UsersProfileResponse?>()
+    val loginResult: LiveData<UsersProfileResponse?> = _loginResult
+
+    fun login(email: String, password: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            val loginRequest = LoginRequest(
+                grantType = "password",
+                username = email,
+                password = password,
+                scope = null,
+                clientId = null,
+                clientSecret = null
+            )
+            val response = apiService.getLogin(loginRequest)
+            if (response.isSuccessful) {
+                _loginResult.value = response.body()
+            } else {
+                _loginResult.value = null
+            }
+            _isLoading.value = false
+        }
+    }
+
     fun onLoginChangesNewPassword(password:String, newPassword:String){
         _password.value = password
         _newPassword.value = newPassword
         _isLoginEnableNewPassword.value = enableLoginNewPassword(password, newPassword)
     }
 
+
     fun onCodigoChanges(codigo:String){
         _codigo.value = codigo
         _isCodigoEnable.value = enableCodigo(codigo)
     }
 
-    fun onLoginChangesEmail(email:String){
+    fun onLoginChangesEmail(email:String) {
         _email.value = email
         _isLoginEnable.value = enableLoginEmail(email)
     }

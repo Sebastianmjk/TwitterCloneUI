@@ -1,0 +1,6 @@
+services:
+  builder:
+    build: .
+    volumes:
+      - ./output:/app/build/outputs/apk  # Monta la carpeta local "output" en la ruta del APK
+    container_name: android-builder

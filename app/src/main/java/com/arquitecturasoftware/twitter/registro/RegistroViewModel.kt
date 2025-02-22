@@ -4,11 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.arquitecturasoftware.twitter.api.ApiService
+import com.arquitecturasoftware.twitter.api.RetrofitHelper
+import com.arquitecturasoftware.twitter.api.response.RegisterRequest
+import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistroViewModel @Inject constructor() : ViewModel() {
+
+    private val apiService: ApiService = RetrofitHelper.api
 
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
@@ -43,6 +51,9 @@ class RegistroViewModel @Inject constructor() : ViewModel() {
     private val _isArrobaNameEnbable = MutableLiveData<Boolean>()
     val isArrobaNameEnbable : LiveData<Boolean> = _isArrobaNameEnbable
 
+    private val _registrationResult = MutableLiveData<UsersProfileResponse?>()
+    val registrationResult: LiveData<UsersProfileResponse?> = _registrationResult
+
     fun onRegistroChangesEmail(email:String){
         _email.value = email
         _isRegistroEnable.value = enableRegistroEmail(email)
@@ -69,6 +80,27 @@ class RegistroViewModel @Inject constructor() : ViewModel() {
         _isRegisterEnable.value = enableRegisto(
             nombre, email,
         )
+    }
+
+    fun registerUser() {
+        viewModelScope.launch {
+            try {
+                val request = RegisterRequest(
+                    name = _nombre.value ?: "",
+                    email = _email.value ?: "",
+                    password = _password.value ?: "",
+                    fullName = _arrobaNombre.value ?: ""
+                )
+                val response = apiService.registerUser(request)
+                if (response.isSuccessful) {
+                    _registrationResult.value = response.body()
+                } else {
+                    _registrationResult.value = null
+                }
+            } catch (e: Exception) {
+                _registrationResult.value = null
+            }
+        }
     }
 
     private fun enableRegistroEmail(email: String): Boolean {

@@ -54,7 +54,9 @@ fun RegistroArrobaNombre(registroViewModel: RegistroViewModel, navigationControl
                 .imePadding()) {
                 Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                     Spacer(modifier = Modifier.weight(1f))
-                    SiguienteButtonNombreArroba(isEnable, navigationController)
+                    SiguienteButtonNombreArroba(isEnable){
+                        registroViewModel.registerUser()
+                    }
                 }
             }
         }
@@ -96,8 +98,8 @@ fun NombreUsuarioText(){
 }
 
 @Composable
-fun SiguienteButtonNombreArroba(loginEnable: Boolean, navController: NavController) {
-    Button(onClick = { navController.navigate(Routes.Home.ruta) }, enabled = loginEnable, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
+fun SiguienteButtonNombreArroba(loginEnable: Boolean, onClick: () -> Unit) {
+    Button(onClick = { onClick() }, enabled = loginEnable, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
         Text(text = "Siguiente")
     }
 }
