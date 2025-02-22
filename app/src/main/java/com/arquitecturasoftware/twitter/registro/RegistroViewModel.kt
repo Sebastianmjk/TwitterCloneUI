@@ -9,6 +9,9 @@ import com.arquitecturasoftware.twitter.api.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.response.RegisterRequest
 import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class RegistroViewModel  : ViewModel() {
 

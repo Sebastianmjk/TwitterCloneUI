@@ -18,21 +18,23 @@ class ProfileViewModel : ViewModel() {
     private val _profileUpdateResult = MutableLiveData<UsersProfileResponse?>()
     val profileUpdateResult: LiveData<UsersProfileResponse?> = _profileUpdateResult
 
-    fun updateProfile(name: String, password: String) {
-        viewModelScope.launch {
-            try {
-                val request = UpdateProfileRequest(name, password)
-                val response = apiService.updateProfile(request)
-                if (response.isSuccessful) {
-                    _profileUpdateResult.value = response.body()
-                    Log.i("ProfileViewModel", "Response: ${response.body()}")
-                } else {
-                    _profileUpdateResult.value = null
-                    Log.i("ProfileViewModel", "Response: ${response.body()}")
-                }
-            } catch (e: Exception) {
+    suspend fun updateProfile(token: String,name: String, password: String): Boolean {
+        return try {
+            val request = UpdateProfileRequest(name, password)
+            val response = apiService.updateProfile(token,request)
+            if (response.isSuccessful) {
+                _profileUpdateResult.value = response.body()
+                Log.i("ProfileViewModel", "Response: ${response.body()}")
+                true
+            } else {
                 _profileUpdateResult.value = null
+                Log.i("ProfileViewModel", "Error: ${response.errorBody()?.string()}")
+                false
             }
+        } catch (e: Exception) {
+            _profileUpdateResult.value = null
+            Log.e("ProfileViewModel", "Exception: ${e.message}")
+            false
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -21,16 +22,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.api.TokenManager
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
+import kotlinx.coroutines.launch
 
 @Composable
 fun EditarPerfil(loginViewModel: LoginViewModel, navController: NavController, profileViewModel: ProfileViewModel) {
     val nombre: String by loginViewModel.nombre.observeAsState("")
     val password: String by loginViewModel.password.observeAsState("")
+    val token = "Bearer "+TokenManager.accessToken
     Column(modifier = Modifier.fillMaxWidth().imePadding()) {
         HeaderEditarPerfil(navController)
         BodyEditarPerfil(loginViewModel)
@@ -38,7 +43,14 @@ fun EditarPerfil(loginViewModel: LoginViewModel, navController: NavController, p
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
         Box(modifier = Modifier.align(Alignment.CenterHorizontally).padding(start = 16.dp, end = 16.dp, bottom = 48.dp)) {
             GuardarButton(){
-                profileViewModel.updateProfile(nombre, password)
+                profileViewModel.viewModelScope.launch {
+                    val success = profileViewModel.updateProfile(token,nombre, password)
+                    if (success) {
+                        navController.navigate(Routes.Perfil.ruta)
+                    } else {
+                        Log.e("EditarPerfil", "Error al actualizar el perfil")
+                    }
+                }
             }
         }
     }

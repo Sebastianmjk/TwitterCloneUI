@@ -75,6 +75,6 @@ interface ApiService {
     ): Response<TweetResponse>
 
     @PUT("/profile/")
-    suspend fun updateProfile(@Body updateProfileRequest: UpdateProfileRequest): Response<UsersProfileResponse>
+    suspend fun updateProfile(@Header("Authorization") token: String ,@Body updateProfileRequest: UpdateProfileRequest): Response<UsersProfileResponse>
 }
 
