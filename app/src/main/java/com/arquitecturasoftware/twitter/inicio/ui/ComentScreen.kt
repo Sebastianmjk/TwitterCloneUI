@@ -34,11 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.arquitecturasoftware.twitter.api.response.interactionservice.CommentRequest
 import com.arquitecturasoftware.twitter.inicio.ui.model.Comentario
 import kotlinx.coroutines.launch
 
 @Composable
-fun ComentScreen(navController: NavController) {
+fun ComentScreen(navController: NavController, tweetsViewModel: TweetsViewModel, tweetId: Int) {
     val commentText = remember { mutableStateOf("") }
     val comments = remember { mutableStateListOf<Comentario>() }
     val scope = rememberCoroutineScope()
@@ -51,6 +52,11 @@ fun ComentScreen(navController: NavController) {
         Button(
             onClick = {
                 scope.launch {
+                    val commentRequest = CommentRequest(
+                        tweet_id = 1,
+                        content = commentText.value
+                    )
+                    tweetsViewModel.postComment(commentRequest)
                     comments.add(Comentario(
                         text = commentText.value,
                         author = "User",

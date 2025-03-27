@@ -2,6 +2,7 @@ package com.arquitecturasoftware.twitter.api
 
 import com.arquitecturasoftware.twitter.api.services.ApiService
 import com.arquitecturasoftware.twitter.api.services.AuthService
+import com.arquitecturasoftware.twitter.api.services.InteractionService
 import com.arquitecturasoftware.twitter.api.services.TweetService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,7 +25,11 @@ object RetrofitHelper{
         retrofit.create(AuthService::class.java)
     }
 
-    val interactionService: TweetService by lazy {
+    val tweetService: TweetService by lazy {
         retrofit.create(TweetService::class.java)
+    }
+
+    val interactionService: InteractionService by lazy {
+        retrofit.create(InteractionService::class.java)
     }
 }

@@ -15,7 +15,7 @@ class AddTweetViewModel : ViewModel() {
     private val _addResult = MutableLiveData<String>()
     val addResult: LiveData<String> = _addResult
 
-    private val tweetService: TweetService = RetrofitHelper.interactionService
+    private val tweetService: TweetService = RetrofitHelper.tweetService
 
     private val _content = MutableLiveData<String>()
     val content: LiveData<String> = _content
