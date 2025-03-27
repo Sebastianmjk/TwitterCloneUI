@@ -10,12 +10,15 @@ import com.arquitecturasoftware.twitter.api.services.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
 import com.arquitecturasoftware.twitter.api.response.authservice.VerifyTokenResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetsRetweetsResponse
 import com.arquitecturasoftware.twitter.api.services.AuthService
+import com.arquitecturasoftware.twitter.api.services.TweetService
 import kotlinx.coroutines.launch
 
 class ProfileViewModel : ViewModel() {
 
     private val authService: AuthService = RetrofitHelper.authApi
+    private val tweetService: TweetService = RetrofitHelper.interactionService
 
     private val _profileUpdateResult = MutableLiveData<UsersProfileResponse?>()
     val profileUpdateResult: LiveData<UsersProfileResponse?> = _profileUpdateResult
@@ -45,6 +48,12 @@ class ProfileViewModel : ViewModel() {
 
     private val _tokenData = MutableLiveData<VerifyTokenResponse?>()
     val tokenData: LiveData<VerifyTokenResponse?> = _tokenData
+
+    private val _userTweets = MutableLiveData<List<Tweet>?>()
+    val userTweets: LiveData<List<Tweet>?> = _userTweets
+
+    private val _userRetweets = MutableLiveData<List<TweetsRetweetsResponse>?>()
+    val userRetweets: LiveData<List<TweetsRetweetsResponse>?> = _userRetweets
 
     fun fetchProfile(token: String) {
         viewModelScope.launch {
@@ -80,5 +89,38 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    fun fetchUserTweets(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = tweetService.getTweetsByUser(userId)
+                if (response.isSuccessful) {
+                    _userTweets.value = response.body()
+                } else {
+                    _userTweets.value = null
+                    Log.e("ProfileViewModel", "Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                _userTweets.value = null
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchUserRetweets(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = tweetService.getRetweetedTweetsByUser(userId)
+                if (response.isSuccessful) {
+                    _userRetweets.value = response.body()
+                } else {
+                    _userRetweets.value = null
+                    Log.e("ProfileViewModel", "Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                _userRetweets.value = null
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
 
 }

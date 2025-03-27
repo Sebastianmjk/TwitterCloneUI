@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,10 +54,15 @@ fun ProfileScreen(
     DisableBackPressHandler()
     val token = "Bearer " + TokenManager.accessToken
     val profile by profileViewModel.profile.observeAsState()
+    val tokenData by profileViewModel.tokenData.observeAsState()
+    val userTweets by profileViewModel.userTweets.observeAsState()
+    val userRetweets by profileViewModel.userRetweets.observeAsState()
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile(token)
+        profileViewModel.fetchTokenData(token)
     }
+
     Scaffold(
         containerColor = Color.Black,
         topBar = {
@@ -120,6 +127,41 @@ fun ProfileScreen(
             }
             HorizontalDivider(color = Color.Gray, thickness = 1.dp)
 
+            tokenData?.let { tokenData ->
+                when (selectedButton) {
+                    SelectedButton.PUBLICACIONES -> {
+                        LaunchedEffect(Unit) {
+                            profileViewModel.fetchUserTweets(tokenData.uid)
+                        }
+                        LazyColumn {
+                            userTweets?.let { tweets ->
+                                items(tweets) { tweet ->
+                                    Text(text = tweet.content, color = Color.White)
+                                }
+                            }
+                        }
+                    }
+                    SelectedButton.RETWEETS -> {
+                        LaunchedEffect(Unit) {
+                            profileViewModel.fetchUserRetweets(tokenData.uid)
+                        }
+                        LazyColumn {
+                            userRetweets?.let { tweetsRetweetsResponses ->
+                                tweetsRetweetsResponses.forEach { tweetsRetweetsResponse ->
+                                    items(tweetsRetweetsResponse.retweets) { retweet ->
+                                        Text(text = retweet.tweet.content, color = Color.White)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    SelectedButton.ME_GUSTA -> {
+                        LazyColumn {
+                            // Implementación para "Me gusta"
+                        }
+                    }
+                }
+            }
         }
     }
 }
