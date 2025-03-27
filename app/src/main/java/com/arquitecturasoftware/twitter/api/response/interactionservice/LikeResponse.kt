@@ -1,3 +1,7 @@
 package com.arquitecturasoftware.twitter.api.response.interactionservice
 
-data class LikeResponse()
+import com.google.gson.annotations.SerializedName
+
+data class LikeResponse(
+    @SerializedName("total_likes") val total_likes: Int
+)

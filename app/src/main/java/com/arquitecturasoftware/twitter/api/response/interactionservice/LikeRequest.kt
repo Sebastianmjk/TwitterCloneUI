@@ -1,3 +1,8 @@
 package com.arquitecturasoftware.twitter.api.response.interactionservice
 
-data class LikeRequest()
+import com.google.gson.annotations.SerializedName
+
+data class LikeRequest(
+    @SerializedName("tweet_id") val tweet_id: Int
+)
+
