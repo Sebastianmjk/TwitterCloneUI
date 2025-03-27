@@ -3,10 +3,9 @@ package com.arquitecturasoftware.twitter.inicio.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.arquitecturasoftware.twitter.api.services.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
-import com.arquitecturasoftware.twitter.api.response.interactionservice.TweetRequest
-import com.arquitecturasoftware.twitter.api.services.InteractionService
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetRequest
+import com.arquitecturasoftware.twitter.api.services.TweetService
 
 class AddTweetViewModel : ViewModel() {
 
@@ -16,7 +15,7 @@ class AddTweetViewModel : ViewModel() {
     private val _addResult = MutableLiveData<String>()
     val addResult: LiveData<String> = _addResult
 
-    private val interactionService: InteractionService = RetrofitHelper.interactionService
+    private val tweetService: TweetService = RetrofitHelper.interactionService
 
     private val _content = MutableLiveData<String>()
     val content: LiveData<String> = _content
@@ -33,7 +32,7 @@ class AddTweetViewModel : ViewModel() {
         _isLoading.value = true
         return try {
             val tweetRequest = TweetRequest(content = content)
-            val response = interactionService.postTweet(token, tweetRequest)
+            val response = tweetService.postTweet(token, tweetRequest)
             if (response.isSuccessful) {
                 val tweetResponse = response.body()
                 _addResult.value =  "Tweet added successfully"

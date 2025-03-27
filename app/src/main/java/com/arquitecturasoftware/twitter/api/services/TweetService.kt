@@ -1,10 +1,10 @@
 package com.arquitecturasoftware.twitter.api.services
 
-import com.arquitecturasoftware.twitter.api.response.interactionservice.RetweetRequest
-import com.arquitecturasoftware.twitter.api.response.interactionservice.RetweetResponse
-import com.arquitecturasoftware.twitter.api.response.interactionservice.TweetRequest
-import com.arquitecturasoftware.twitter.api.response.interactionservice.TweetResponse
-import com.arquitecturasoftware.twitter.api.response.interactionservice.TweetsRetweetsResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetRequest
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetRequest
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetsRetweetsResponse
 import com.arquitecturasoftware.twitter.inicio.ui.Tweet
 import retrofit2.Response
 import retrofit2.http.Body
@@ -13,7 +13,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface InteractionService{
+interface TweetService{
     // tweets
     @GET("/service_tweet/tweets/")
     suspend fun getAllTweets(): Response<List<Tweet>>

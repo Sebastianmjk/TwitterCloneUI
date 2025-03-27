@@ -2,11 +2,8 @@ package com.arquitecturasoftware.twitter.api.services
 
 import com.arquitecturasoftware.twitter.api.response.authservice.UpdateProfileRequest
 import com.arquitecturasoftware.twitter.api.response.ProfilePhotoResponse
-import com.arquitecturasoftware.twitter.api.response.interactionservice.TweetRequest
-import com.arquitecturasoftware.twitter.api.response.interactionservice.TweetResponse
 import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
 import com.arquitecturasoftware.twitter.api.response.UsersTweetLikedRetweetedResponse
-import com.arquitecturasoftware.twitter.inicio.ui.Tweet
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
