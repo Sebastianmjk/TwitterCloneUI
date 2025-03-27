@@ -4,6 +4,7 @@ import com.arquitecturasoftware.twitter.api.response.authservice.RegisterRequest
 import com.arquitecturasoftware.twitter.api.response.authservice.TokenResponse
 import com.arquitecturasoftware.twitter.api.response.authservice.UpdateProfileRequest
 import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.response.authservice.VerifyTokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -28,6 +29,10 @@ interface AuthService {
     @POST("/service_auth/auth/logout")
     suspend fun logout(@Header("Authorization") token: String): Response<String>
 
+    @GET("/service_auth/auth/verify_token")
+    suspend fun verifyToken(@Header("Authorization") token: String): Response<VerifyTokenResponse>
+
+    // Profile
     @GET("/service_user/profile/")
     suspend fun getProfile(@Header("Authorization") token: String): Response<UsersProfileResponse>
 

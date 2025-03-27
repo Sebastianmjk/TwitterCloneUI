@@ -43,7 +43,12 @@ import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, sharedViewModel: SharedViewModel,profileViewModel: ProfileViewModel) {
+fun ProfileScreen(
+    navController: NavController,
+    loginViewModel: LoginViewModel,
+    sharedViewModel: SharedViewModel,
+    profileViewModel: ProfileViewModel
+) {
     DisableBackPressHandler()
     val token = "Bearer " + TokenManager.accessToken
     val profile by profileViewModel.profile.observeAsState()
@@ -51,10 +56,10 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile(token)
     }
-        Scaffold(
+    Scaffold(
         containerColor = Color.Black,
         topBar = {
-            HeaderProfile(navController, loginViewModel,profile)
+            HeaderProfile(navController, profile)
         },
         bottomBar = {
             MyBottomNavigationInicio(navController, sharedViewModel)
@@ -64,29 +69,51 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).padding(bottom = 8.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(bottom = 8.dp)
+        ) {
             var selectedButton by remember { mutableStateOf(SelectedButton.PUBLICACIONES) }
             Row {
                 TextButton(
                     onClick = { selectedButton = SelectedButton.PUBLICACIONES },
-                    colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
-                    border = if (selectedButton == SelectedButton.PUBLICACIONES) BorderStroke(1.dp, Color(0xFFADD8E6)) else BorderStroke(1.dp, Color.Transparent)
+                    colors = ButtonDefaults.textButtonColors(
+                        disabledContentColor = Color.Gray,
+                        contentColor = Color.White
+                    ),
+                    border = if (selectedButton == SelectedButton.PUBLICACIONES) BorderStroke(
+                        1.dp,
+                        Color(0xFFADD8E6)
+                    ) else BorderStroke(1.dp, Color.Transparent)
                 ) {
                     Text(text = "Publicaciones")
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 TextButton(
                     onClick = { selectedButton = SelectedButton.RETWEETS },
-                    colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
-                    border = if (selectedButton == SelectedButton.RETWEETS) BorderStroke(1.dp, Color(0xFFADD8E6)) else BorderStroke(1.dp, Color.Transparent)
+                    colors = ButtonDefaults.textButtonColors(
+                        disabledContentColor = Color.Gray,
+                        contentColor = Color.White
+                    ),
+                    border = if (selectedButton == SelectedButton.RETWEETS) BorderStroke(
+                        1.dp,
+                        Color(0xFFADD8E6)
+                    ) else BorderStroke(1.dp, Color.Transparent)
                 ) {
                     Text(text = "Retweets")
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 TextButton(
                     onClick = { selectedButton = SelectedButton.ME_GUSTA },
-                    colors = ButtonDefaults.textButtonColors(disabledContentColor = Color.Gray, contentColor = Color.White),
-                    border = if (selectedButton == SelectedButton.ME_GUSTA) BorderStroke(1.dp, Color(0xFFADD8E6)) else BorderStroke(1.dp, Color.Transparent)
+                    colors = ButtonDefaults.textButtonColors(
+                        disabledContentColor = Color.Gray,
+                        contentColor = Color.White
+                    ),
+                    border = if (selectedButton == SelectedButton.ME_GUSTA) BorderStroke(
+                        1.dp,
+                        Color(0xFFADD8E6)
+                    ) else BorderStroke(1.dp, Color.Transparent)
                 ) {
                     Text(text = "Me gusta")
                 }
@@ -103,20 +130,21 @@ enum class SelectedButton {
 }
 
 @Composable
-fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel, profile: UsersProfileResponse?) {
-    val imageUri: Uri? by loginViewModel.imageUri.observeAsState(null)
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        loginViewModel.setImageUri(uri)
-    }
+fun HeaderProfile(navController: NavController, profile: UsersProfileResponse?) {
 
     Column(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth().padding(top = 36.dp, start = 16.dp, end = 16.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 36.dp, start = 16.dp, end = 16.dp)
+        ) {
             Button(
                 onClick = { navController.navigate(Routes.EditarPerfil.ruta) },
                 border = BorderStroke(1.dp, Color.Gray),
-                colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black)
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.White,
+                    containerColor = Color.Black
+                )
             ) {
                 Text("Editar Perfil")
             }
@@ -130,7 +158,7 @@ fun HeaderProfile(navController: NavController, loginViewModel: LoginViewModel, 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column (Modifier.padding(end = 24.dp)) {
+            Column(Modifier.padding(end = 24.dp)) {
                 Text(
                     profile?.name ?: "Loading...",
                     color = Color.White,

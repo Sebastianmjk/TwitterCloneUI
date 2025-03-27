@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.arquitecturasoftware.twitter.api.services.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.response.authservice.VerifyTokenResponse
 import com.arquitecturasoftware.twitter.api.services.AuthService
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,9 @@ class ProfileViewModel : ViewModel() {
     private val _profile = MutableLiveData<UsersProfileResponse?>()
     val profile: LiveData<UsersProfileResponse?> = _profile
 
+    private val _tokenData = MutableLiveData<VerifyTokenResponse?>()
+    val tokenData: LiveData<VerifyTokenResponse?> = _tokenData
+
     fun fetchProfile(token: String) {
         viewModelScope.launch {
             try {
@@ -58,4 +62,23 @@ class ProfileViewModel : ViewModel() {
             }
         }
     }
+
+    fun fetchTokenData(token: String) {
+        viewModelScope.launch {
+            try {
+                val response = authService.verifyToken(token)
+                if (response.isSuccessful) {
+                    _tokenData.value = response.body()
+                } else {
+                    _tokenData.value = null
+                    Log.e("ProfileViewModel", "Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                _tokenData.value = null
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+
 }
