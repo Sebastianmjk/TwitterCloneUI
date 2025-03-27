@@ -29,9 +29,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
 import com.arquitecturasoftware.twitter.routes.Routes
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable

@@ -1,6 +1,5 @@
 package com.arquitecturasoftware.twitter.login.ui
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -45,14 +44,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.arquitecturasoftware.twitter.api.response.TokenResponse
-import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.response.authservice.TokenResponse
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController) {

@@ -100,26 +100,7 @@ fun BodyEditarPerfil(loginViewModel: LoginViewModel) {
     val nombre: String by loginViewModel.nombre.observeAsState("")
     val password: String by loginViewModel.password.observeAsState("")
 
-    val imageUri: Uri? by loginViewModel.imageUri.observeAsState(null)
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        loginViewModel.setImageUri(uri)
-    }
-
     Column(Modifier.padding(16.dp)) {
-        Box(
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(55.dp)
-                .clickable { launcher.launch("image/*") }
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = imageUri ?: R.drawable.ic_launcher_background),
-                contentDescription = "profile picture",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
         Spacer(Modifier.size(16.dp))
         NombreEditarPerfil(nombre) { loginViewModel.setNombre(it) }
         ContraEditarPerfil(password) { loginViewModel.setPassword(it) }

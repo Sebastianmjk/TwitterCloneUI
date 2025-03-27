@@ -4,18 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.arquitecturasoftware.twitter.api.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
-import com.arquitecturasoftware.twitter.api.response.RegisterRequest
-import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import com.arquitecturasoftware.twitter.api.response.authservice.RegisterRequest
+import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.services.AuthService
 
 class RegistroViewModel  : ViewModel() {
 
-    private val apiService: ApiService = RetrofitHelper.api
+    private val authService: AuthService = RetrofitHelper.authApi
 
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
@@ -89,7 +85,7 @@ class RegistroViewModel  : ViewModel() {
                 password = _password.value ?: "",
                 fullName = _arrobaNombre.value ?: ""
             )
-            val response = apiService.registerUser(request)
+            val response = authService.registerUser(request)
             if (response.isSuccessful) {
                 _registrationResult.value = response.body()
                 true

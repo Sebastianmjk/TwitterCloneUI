@@ -15,7 +15,7 @@ class TweetsViewModel : ViewModel() {
     fun fetchTweets() {
         viewModelScope.launch {
             try {
-                val response = RetrofitHelper.api.getTweets()
+                val response = RetrofitHelper.interactionService.getAllTweets()
                 if (response.isSuccessful) {
                     Log.e("TweetsViewModel", "response: ${response.body()}")
                     _tweets.value = response.body() ?: emptyList()

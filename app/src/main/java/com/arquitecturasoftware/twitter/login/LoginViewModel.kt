@@ -1,25 +1,18 @@
 package com.arquitecturasoftware.twitter.login
 
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.arquitecturasoftware.twitter.api.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.TokenManager
-import com.arquitecturasoftware.twitter.api.response.LoginRequest
-import com.arquitecturasoftware.twitter.api.response.TokenResponse
-import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import com.arquitecturasoftware.twitter.api.response.authservice.TokenResponse
+import com.arquitecturasoftware.twitter.api.services.AuthService
 
 class LoginViewModel  :ViewModel() {
 
-    private val apiService: ApiService = RetrofitHelper.api
+    private val authService: AuthService = RetrofitHelper.authApi
 
     private val _nombre = MutableLiveData<String>()
     val nombre : LiveData<String> = _nombre
@@ -60,7 +53,7 @@ class LoginViewModel  :ViewModel() {
     suspend fun login(email: String, password: String): Boolean {
         _isLoading.value = true
         return try {
-            val response = apiService.getLogin(email, password)
+            val response = authService.getLogin(email, password)
             if (response.isSuccessful) {
                 val tokenResponse = response.body()
                 _loginResult.value = tokenResponse

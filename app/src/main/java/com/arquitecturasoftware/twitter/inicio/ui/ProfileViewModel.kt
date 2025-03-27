@@ -1,19 +1,20 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
-import UpdateProfileRequest
+import com.arquitecturasoftware.twitter.api.response.authservice.UpdateProfileRequest
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arquitecturasoftware.twitter.api.ApiService
+import com.arquitecturasoftware.twitter.api.services.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
-import com.arquitecturasoftware.twitter.api.response.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
+import com.arquitecturasoftware.twitter.api.services.AuthService
 import kotlinx.coroutines.launch
 
 class ProfileViewModel : ViewModel() {
 
-    private val apiService: ApiService = RetrofitHelper.api
+    private val authService: AuthService = RetrofitHelper.authApi
 
     private val _profileUpdateResult = MutableLiveData<UsersProfileResponse?>()
     val profileUpdateResult: LiveData<UsersProfileResponse?> = _profileUpdateResult
@@ -21,7 +22,7 @@ class ProfileViewModel : ViewModel() {
     suspend fun updateProfile(token: String,name: String, password: String): Boolean {
         return try {
             val request = UpdateProfileRequest(name, password)
-            val response = apiService.updateProfile(token,request)
+            val response = authService.updateProfile(token,request)
             if (response.isSuccessful) {
                 _profileUpdateResult.value = response.body()
                 Log.i("ProfileViewModel", "Response: ${response.body()}")
@@ -44,7 +45,7 @@ class ProfileViewModel : ViewModel() {
     fun fetchProfile(token: String) {
         viewModelScope.launch {
             try {
-                val response = apiService.getProfile(token)
+                val response = authService.getProfile(token)
                 if (response.isSuccessful) {
                     _profile.value = response.body()
                 } else {

@@ -1,4 +1,4 @@
-package com.arquitecturasoftware.twitter.api.response
+package com.arquitecturasoftware.twitter.api.response.authservice
 
 import com.google.gson.annotations.SerializedName
 

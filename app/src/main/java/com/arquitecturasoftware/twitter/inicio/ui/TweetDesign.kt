@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -36,37 +38,69 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
     var like by rememberSaveable { mutableStateOf(false) }
     Column {
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
-        Row(Modifier.fillMaxWidth().padding(10.dp)) {
-            Column(Modifier.fillMaxWidth().padding(16.dp)) {
+        Row(Modifier
+            .fillMaxWidth()
+            .padding(10.dp)) {
+            Column(Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
                 Row(Modifier.fillMaxWidth()) {
-                    TextTitle("User ${tweet.user_id}", Modifier.padding(end = 8.dp))
+                   Icon(
+                        Icons.Rounded.AccountCircle,
+                        contentDescription = "",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp)
+                   )
+                    TextTitle(tweet.user_name, Modifier.padding(end = 8.dp))
                     Spacer(modifier = Modifier.weight(1f))
                 }
-                TextBody(tweet.contenido, Modifier.padding(bottom = 16.dp))
+                TextBody(tweet.content, Modifier.padding(bottom = 16.dp))
                 Row(Modifier.padding(top = 16.dp)) {
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_chat), contentDescription = "", tint = Color(0xFF7E8B98))
-                    }, selectedIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_chat_filled), contentDescription = "", tint = Color.Gray)
-                    }, isSelected = chat) { chat = !chat
-                        navController.navigate(Routes.Comentarios.ruta) }
-                    SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color(0xFF7E8B98)
+                            painterResource(R.drawable.ic_chat),
+                            contentDescription = "",
+                            tint = Color(0xFF7E8B98)
                         )
                     }, selectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_rt), contentDescription = "", tint = Color.Green)
+                            painterResource(R.drawable.ic_chat_filled),
+                            contentDescription = "",
+                            tint = Color.Gray
+                        )
+                    }, isSelected = chat) {
+                        chat = !chat
+                        navController.navigate(Routes.Comentarios.ruta)
+                    }
+                    SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
+                        Icon(
+                            painterResource(R.drawable.ic_rt),
+                            contentDescription = "",
+                            tint = Color(0xFF7E8B98)
+                        )
+                    }, selectedIcon = {
+                        Icon(
+                            painterResource(R.drawable.ic_rt),
+                            contentDescription = "",
+                            tint = Color.Green
+                        )
                     }, isSelected = rt) { rt = !rt }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_like), contentDescription = "", tint = Color(0xFF7E8B98)
+                            painterResource(R.drawable.ic_like),
+                            contentDescription = "",
+                            tint = Color(0xFF7E8B98)
                         )
                     }, selectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_like_filled), contentDescription = "", tint = Color.Red)
+                            painterResource(R.drawable.ic_like_filled),
+                            contentDescription = "",
+                            tint = Color.Red
+                        )
                     }, isSelected = like) { like = !like }
                 }
             }
@@ -76,15 +110,29 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
 }
 
 @Composable
-fun SocialIcon(modifier: Modifier, unselectedIcon: @Composable () -> Unit, selectedIcon: @Composable () -> Unit, isSelected: Boolean, onItemSelected: () -> Unit) {
+fun SocialIcon(
+    modifier: Modifier,
+    unselectedIcon: @Composable () -> Unit,
+    selectedIcon: @Composable () -> Unit,
+    isSelected: Boolean,
+    onItemSelected: () -> Unit
+) {
     val defaultValue = 1
-    Row(modifier = modifier.clickable { onItemSelected() }, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.clickable { onItemSelected() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (isSelected) {
             selectedIcon()
         } else {
             unselectedIcon()
         }
-        Text(text = if(isSelected) (defaultValue+1).toString() else defaultValue.toString(), color = Color(0xFF7E8B98), fontSize = 12.sp, modifier = Modifier.padding(start = 4.dp))
+        Text(
+            text = if (isSelected) (defaultValue + 1).toString() else defaultValue.toString(),
+            color = Color(0xFF7E8B98),
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 4.dp)
+        )
     }
 
 }
@@ -92,7 +140,7 @@ fun SocialIcon(modifier: Modifier, unselectedIcon: @Composable () -> Unit, selec
 @Composable
 fun TextBody(text: String, modifier: Modifier = Modifier) {
     Text(
-        text = text, color = Color.White,  modifier = modifier
+        text = text, color = Color.White, modifier = modifier
     )
 }
 
@@ -106,6 +154,6 @@ fun TextTitle(title: String, modifier: Modifier = Modifier) {
 @Composable
 fun DefaultTitle(title: String, modifier: Modifier = Modifier) {
     Text(
-        text = title, color = Color.Gray,  modifier = modifier
+        text = title, color = Color.Gray, modifier = modifier
     )
 }
