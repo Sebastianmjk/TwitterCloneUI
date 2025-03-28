@@ -70,7 +70,8 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.RegisterPassword.ruta) { ContraRegistro(registroViewModel, navigationController) }
                         composable(Routes.Perfil.ruta) { ProfileScreen(
                             navigationController, loginViewModel, sharedViewModel,
-                            profileViewModel = profileViewModel
+                            profileViewModel = profileViewModel,
+                            tweetsViewModel = tweetsViewModel
                         ) }
                         composable(Routes.OlvidarContrasena.ruta) { LoginOlvidarContrasena(loginViewModel, navigationController) }
                         composable(Routes.OlvidarContraCodigo.ruta) { LoginCodigoVerificacion(loginViewModel, navigationController) }

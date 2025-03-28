@@ -50,7 +50,8 @@ fun ProfileScreen(
     navController: NavController,
     loginViewModel: LoginViewModel,
     sharedViewModel: SharedViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    tweetsViewModel: TweetsViewModel
 ) {
     DisableBackPressHandler()
     val token = "Bearer " + TokenManager.accessToken
@@ -136,7 +137,7 @@ fun ProfileScreen(
                         }
                         LazyColumn {
                             items(userTweets ?: emptyList()) { tweet ->
-                                TweetDesign(navController, tweet, profileViewModel)
+                                TweetDesign(navController, tweet, profileViewModel, tweetsViewModel)
                             }
                         }
                     }
@@ -146,7 +147,7 @@ fun ProfileScreen(
                         }
                         LazyColumn {
                             items(userRetweets ?: emptyList()) { retweet ->
-                                ReTweetDesign(navController, retweet, profileViewModel)
+                                ReTweetDesign(navController, retweet, profileViewModel, tweetsViewModel)
                             }
                         }
                     }

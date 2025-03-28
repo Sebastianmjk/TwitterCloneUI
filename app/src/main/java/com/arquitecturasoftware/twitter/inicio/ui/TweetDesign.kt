@@ -42,7 +42,6 @@ fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: Pr
     val retweetedTweets by profileViewModel.retweetedTweets
     val retweetCounts by profileViewModel.retweetCounts
     val chattedTweets by profileViewModel.chattedTweets
-    val chatCounts by profileViewModel.chatCounts
     val likedTweets by profileViewModel.likedTweets
     val likeCounts by profileViewModel.likeCounts
 
@@ -88,12 +87,12 @@ fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: Pr
                         )
                     }, selectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_chat_filled),
+                            painterResource(R.drawable.ic_chat),
                             contentDescription = "",
-                            tint = Color.Gray
+                            tint = Color(0xFF7E8B98)
                         )
-                    }, isSelected = chat, count = chatCounts[tweet.id] ?: 0) {
-                        profileViewModel.toggleChat(tweet.id)
+                    }, isSelected = chat,) {
+                        //profileViewModel.toggleChat(tweet.id)
                         navController.navigate("${Routes.Comentarios.ruta}/${tweet.id}")
                     }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {

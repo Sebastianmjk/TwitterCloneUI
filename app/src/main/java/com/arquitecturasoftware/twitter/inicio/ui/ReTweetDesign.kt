@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +17,12 @@ import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetRespons
 
 @Composable
 fun ReTweetDesign(navController: NavController, retweetResponse: RetweetResponse, profileViewModel: ProfileViewModel,tweetsViewModel: TweetsViewModel) {
+
     val tweet = retweetResponse.tweet.toTweet()
+
+    val tweetPrueba = retweetResponse.tweet.id
+    Log.d("ReTweetDesign", "Tweet: $tweet")
+    Log.d("ReTweetDesign", "TweetPrueba: $tweetPrueba")
     Column(modifier = Modifier.padding(10.dp)) {
         Icon(
             painter = painterResource(id = R.drawable.ic_rt),
