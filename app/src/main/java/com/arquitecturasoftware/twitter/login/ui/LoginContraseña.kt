@@ -106,6 +106,8 @@ fun LoginScreen2(loginViewModel: LoginViewModel, navController: NavController) {
                                         "Usuario o contraseña incorrectos",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                }else{
+                                    loginViewModel.getDataUser()
                                 }
                             }
                         }

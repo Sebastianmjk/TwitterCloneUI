@@ -15,7 +15,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -32,10 +34,18 @@ import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun TweetDesign(navController: NavController, tweet: Tweet) {
+fun TweetDesign(navController: NavController, tweet: Tweet, tweetsViewModel: TweetsViewModel) {
     var chat by rememberSaveable { mutableStateOf(false) }
     var rt by rememberSaveable { mutableStateOf(false) }
     var like by rememberSaveable { mutableStateOf(false) }
+
+    val commentCount by tweetsViewModel.commentCounts.observeAsState(emptyMap())
+    val commentCountForTweet = commentCount[tweet.id] ?: 0
+
+    LaunchedEffect(tweet.id) {
+        tweetsViewModel.fetchCommentCount(tweet.id)
+    }
+
     Column {
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
         Row(Modifier
@@ -60,7 +70,7 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                 }
                 TextBody(tweet.content, Modifier.padding(bottom = 16.dp))
                 Row(Modifier.padding(top = 16.dp)) {
-                    SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
+                    SocialIcon(modifier = Modifier.weight(1f), count = commentCountForTweet, unselectedIcon = {
                         Icon(
                             painterResource(R.drawable.ic_chat),
                             contentDescription = "",
@@ -74,7 +84,7 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                         )
                     }, isSelected = chat) {
                         chat = !chat
-                        navController.navigate(Routes.Comentarios.ruta)
+                        navController.navigate("${Routes.Comentarios.ruta}/${tweet.id}")
                     }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
@@ -112,12 +122,13 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
 @Composable
 fun SocialIcon(
     modifier: Modifier,
+    count: Int = 0,
     unselectedIcon: @Composable () -> Unit,
     selectedIcon: @Composable () -> Unit,
     isSelected: Boolean,
     onItemSelected: () -> Unit
 ) {
-    val defaultValue = 1
+    val defaultValue = 0
     Row(
         modifier = modifier.clickable { onItemSelected() },
         verticalAlignment = Alignment.CenterVertically
@@ -128,7 +139,7 @@ fun SocialIcon(
             unselectedIcon()
         }
         Text(
-            text = if (isSelected) (defaultValue + 1).toString() else defaultValue.toString(),
+            text = count.toString(),
             color = Color(0xFF7E8B98),
             fontSize = 12.sp,
             modifier = Modifier.padding(start = 4.dp)

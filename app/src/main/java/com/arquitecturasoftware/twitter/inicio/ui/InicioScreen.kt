@@ -66,7 +66,7 @@ fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel,
         Column(modifier = Modifier.padding(paddingValues)) {
             LazyColumn {
                 items(tweets) { tweet ->
-                    TweetDesign(navController, tweet)
+                    TweetDesign(navController, tweet, tweetsViewModel)
                 }
             }
         }

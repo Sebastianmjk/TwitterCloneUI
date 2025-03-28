@@ -1,12 +1,12 @@
 package com.arquitecturasoftware.twitter.login
 
-import android.net.Uri
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.TokenManager
+import com.arquitecturasoftware.twitter.api.UserDataToken
 import com.arquitecturasoftware.twitter.api.response.authservice.TokenResponse
 import com.arquitecturasoftware.twitter.api.services.AuthService
 
@@ -44,8 +44,6 @@ class LoginViewModel  :ViewModel() {
     private val _isLoginEnableNewPassword = MutableLiveData<Boolean>()
     val isLoginNewEnablePassword : LiveData<Boolean> = _isLoginEnableNewPassword
 
-    private val _imageUri = MutableLiveData<Uri?>()
-    val imageUri: LiveData<Uri?> = _imageUri
 
     private val _loginResult = MutableLiveData<TokenResponse?>()
     val loginResult: LiveData<TokenResponse?> = _loginResult
@@ -104,10 +102,6 @@ class LoginViewModel  :ViewModel() {
         _isLoginEnablePassword.value = enableLoginPassword(password)
     }
 
-    fun setImageUri(uri: Uri?) {
-        _imageUri.value = uri
-    }
-
     private fun enableLoginEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
@@ -124,4 +118,23 @@ class LoginViewModel  :ViewModel() {
         return true
     }
 
+    suspend fun getDataUser(){
+        _isLoading.value = true
+        try {
+            val response = authService.verifyToken(TokenManager.accessToken!!)
+            if (response.isSuccessful) {
+                val user = response.body()
+                user?.let {
+                    UserDataToken.uid = it.uid
+                    UserDataToken.email = it.email
+                    UserDataToken.full_name = it.full_name
+                }
+
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            _isLoading.value = false
+        }
+    }
 }
