@@ -10,12 +10,18 @@ import androidx.lifecycle.viewModelScope
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.TokenManager
 import com.arquitecturasoftware.twitter.api.response.interactionservice.CommentRequest
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetResponse
 import com.arquitecturasoftware.twitter.inicio.ui.model.Comment
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 class TweetsViewModel : ViewModel() {
     private val _tweets = MutableLiveData<List<Tweet>>()
     val tweets: LiveData<List<Tweet>> get() = _tweets
+
+    private val _retweets = MutableLiveData<List<RetweetResponse>>()
+    val retweets: LiveData<List<RetweetResponse>> get() = _retweets
 
     private val _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>> get() = _comments
@@ -23,16 +29,30 @@ class TweetsViewModel : ViewModel() {
     private val _commentCounts = MutableLiveData<Map<Int,Int>>()
     val commentCounts: LiveData<Map<Int,Int>> get() = _commentCounts
 
-    fun fetchTweets() {
+    fun fetchTweetsAndRetweets() {
         viewModelScope.launch {
             try {
-                val response = RetrofitHelper.tweetService.getAllTweets()
+                val response = RetrofitHelper.tweetService.getTweetsAndRetweets()
                 if (response.isSuccessful) {
-                    Log.e("TweetsViewModel", "response: ${response.body()}")
-                    _tweets.value = response.body() ?: emptyList()
+                    response.body()?.let { mixedList ->
+                        val tweets = mutableListOf<Tweet>()
+                        val retweets = mutableListOf<RetweetResponse>()
+
+                        for (item in mixedList) {
+                            if (item.has("retweeter_name")) {
+                                val retweet = Gson().fromJson(item, RetweetResponse::class.java)
+                                retweets.add(retweet)
+                            } else {
+                                val tweet = Gson().fromJson(item, TweetResponse::class.java).toTweet()
+                                tweets.add(tweet)
+                            }
+                        }
+
+                        _tweets.value = tweets
+                        _retweets.value = retweets
+                    }
                 } else {
-                    Log.e("TweetsViewModel", "response: ${response.body()}")
-                    Log.e("TweetsViewModel", "Failed to fetch tweets")
+                    Log.e("TweetsViewModel", "Failed to fetch tweets and retweets")
                 }
             } catch (e: Exception) {
                 Log.e("TweetsViewModel", "Exception: ${e.message}")

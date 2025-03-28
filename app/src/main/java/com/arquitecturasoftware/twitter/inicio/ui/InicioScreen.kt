@@ -49,6 +49,7 @@ import com.arquitecturasoftware.twitter.routes.Routes
 fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel, tweetsViewModel: TweetsViewModel, profileViewModel: ProfileViewModel) {
     DisableBackPressHandler()
     val tweets by tweetsViewModel.tweets.observeAsState(emptyList())
+    val retweets by tweetsViewModel.retweets.observeAsState(emptyList())
 
     Scaffold(
         containerColor = Color.Black,
@@ -68,12 +69,15 @@ fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel,
                 items(tweets) { tweet ->
                     TweetDesign(navController, tweet, profileViewModel, tweetsViewModel)
                 }
+                items(retweets) { retweet ->
+                    ReTweetDesign(navController, retweet, profileViewModel, tweetsViewModel)
+                }
             }
         }
     }
 
     LaunchedEffect(Unit) {
-        tweetsViewModel.fetchTweets()
+        tweetsViewModel.fetchTweetsAndRetweets()
     }
 }
 @Composable

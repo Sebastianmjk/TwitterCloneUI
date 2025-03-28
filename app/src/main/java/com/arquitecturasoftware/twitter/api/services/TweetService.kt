@@ -6,6 +6,7 @@ import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetRequest
 import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetResponse
 import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetsRetweetsResponse
 import com.arquitecturasoftware.twitter.inicio.ui.Tweet
+import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -26,7 +27,7 @@ interface TweetService{
     suspend fun getTweetsByUser(@Path("user_id") userId: Int): Response<List<Tweet>>
 
     @GET("/service_tweet/tweets/retweets/")
-    suspend fun getTweetsAndRetweets(): Response<TweetsRetweetsResponse>
+    suspend fun getTweetsAndRetweets(): Response<List<JsonObject>>
 
     @GET("/service_tweet/tweets/retweeted/{user_id}")
     suspend fun getRetweetedTweetsByUser(@Path("user_id") userId: Int): Response<List<TweetsRetweetsResponse>>

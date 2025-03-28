@@ -191,7 +191,7 @@ fun HeaderProfile(navController: NavController, profile: UsersProfileResponse?) 
             ) {
                 Text("Editar Perfil")
             }
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.size(8.dp))
             CerrarSesionButton(navController)
         }
         Row(
