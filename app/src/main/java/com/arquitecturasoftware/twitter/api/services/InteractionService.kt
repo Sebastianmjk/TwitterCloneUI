@@ -4,7 +4,10 @@ import com.arquitecturasoftware.twitter.api.response.interactionservice.CommentR
 import com.arquitecturasoftware.twitter.api.response.interactionservice.CommentResponse
 import com.arquitecturasoftware.twitter.api.response.interactionservice.CountCommentResponse
 import com.arquitecturasoftware.twitter.api.response.interactionservice.LikeResponse
+import com.arquitecturasoftware.twitter.api.response.interactionservice.LikesResponse
 import com.arquitecturasoftware.twitter.api.response.interactionservice.NewLikeResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetRequest
+import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -20,10 +23,16 @@ interface InteractionService {
     suspend fun getCountLikesByTweetID(@Path("tweet_id") tweetId: Int): Response<LikeResponse>
 
     @POST("/service_interaction/like")
-    suspend fun postLike(@Path("tweet_id") tweetId: Int): Response<NewLikeResponse>
+    suspend fun postLike(@Header("Authorization") token: String,
+                         @Body likeResponse: RetweetRequest
+    ): Response<NewLikeResponse>
 
-    @DELETE("/service_interaction/like/")
-    suspend fun deleteLike(@Path("tweet_id") tweetId: Int): Response<Unit>
+    @DELETE("/service_interaction/like/{tweet_id}")
+    suspend fun deleteLike(@Header("Authorization") token: String,
+                                   @Path("tweet_id") tweetId: Int): Response<Unit>
+
+    @GET("/service_interaction/likes/user/{user_id}")
+    suspend fun getLikesByUser(@Path("user_id") userId: Int): Response<List<LikesResponse>>
 
     //comment
     @GET("/service_interaction/comments/tweet/{tweet_id}")

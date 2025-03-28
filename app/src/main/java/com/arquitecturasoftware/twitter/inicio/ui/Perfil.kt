@@ -59,6 +59,7 @@ fun ProfileScreen(
     val tokenData by profileViewModel.tokenData.observeAsState()
     val userTweets by profileViewModel.userTweets.observeAsState(emptyList())
     val userRetweets by profileViewModel.userRetweets.observeAsState(emptyList())
+    val likededTweets by profileViewModel.likededTweets.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile(token)
@@ -152,8 +153,13 @@ fun ProfileScreen(
                         }
                     }
                     SelectedButton.ME_GUSTA -> {
+                        LaunchedEffect(Unit) {
+                            profileViewModel.fetchLikedTweets(tokenData.uid)
+                        }
                         LazyColumn {
-                            // Implementación para "Me gusta"
+                            items(likededTweets ?: emptyList()) { tweet ->
+                                TweetDesign(navController, tweet, profileViewModel, tweetsViewModel)
+                            }
                         }
                     }
                 }

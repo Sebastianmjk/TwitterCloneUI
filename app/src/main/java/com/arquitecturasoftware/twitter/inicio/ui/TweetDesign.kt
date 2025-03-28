@@ -125,7 +125,9 @@ fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: Pr
                             tint = Color.Red
                         )
                     }, isSelected = like, count = likeCounts[tweet.id] ?: 0) {
-                        profileViewModel.toggleLike(tweet.id)
+                        coroutineScope.launch {
+                            profileViewModel.toggleLike(token, tweet.id)
+                        }
                     }
                 }
             }
