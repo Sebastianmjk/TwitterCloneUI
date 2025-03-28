@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -33,6 +34,7 @@ interface InteractionService {
 
     @POST("/service_interaction/comment")
     suspend fun postComment(
+        @Header("Authorization") token: String,
         @Body commentRequest: CommentRequest
     ): Response<CommentResponse>
 

@@ -77,7 +77,10 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
                         composable(Routes.RegistroArrobaNombre.ruta) { RegistroArrobaNombre(registroViewModel, navigationController) }
                         composable(Routes.EditarPerfil.ruta) { EditarPerfil(loginViewModel, navigationController, profileViewModel) }
-                        composable(Routes.Comentarios.ruta) { ComentScreen(navigationController,tweetsViewModel,1) }
+                        composable("${Routes.Comentarios.ruta}/{tweetId}") { backStackEntry ->
+                            val tweetId = backStackEntry.arguments?.getString("tweetId")?.toInt() ?: 0
+                            ComentScreen(navigationController, tweetsViewModel, tweetId)
+                        }
                     }
                 }
             }

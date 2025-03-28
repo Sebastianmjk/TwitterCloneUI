@@ -1,4 +1,3 @@
-// src/main/java/com/arquitecturasoftware/twitter/inicio/ui/ReTweetDesign.kt
 package com.arquitecturasoftware.twitter.inicio.ui
 
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,7 @@ import com.arquitecturasoftware.twitter.R
 import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
 
 @Composable
-fun ReTweetDesign(navController: NavController, retweetResponse: RetweetResponse, profileViewModel: ProfileViewModel) {
+fun ReTweetDesign(navController: NavController, retweetResponse: RetweetResponse, profileViewModel: ProfileViewModel,tweetsViewModel: TweetsViewModel) {
     val tweet = retweetResponse.tweet.toTweet()
     Column(modifier = Modifier.padding(10.dp)) {
         Icon(
@@ -31,5 +30,5 @@ fun ReTweetDesign(navController: NavController, retweetResponse: RetweetResponse
             modifier = Modifier.padding(start = 8.dp)
         )
     }
-    TweetDesign(navController, tweet, profileViewModel)
+    TweetDesign(navController, tweet, profileViewModel, tweetsViewModel)
 }

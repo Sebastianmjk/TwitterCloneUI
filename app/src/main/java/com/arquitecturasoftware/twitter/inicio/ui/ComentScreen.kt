@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,7 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,19 +34,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.arquitecturasoftware.twitter.api.response.interactionservice.CommentRequest
-import com.arquitecturasoftware.twitter.inicio.ui.model.Comentario
+import com.arquitecturasoftware.twitter.inicio.ui.model.Comment
 import kotlinx.coroutines.launch
 
 @Composable
 fun ComentScreen(navController: NavController, tweetsViewModel: TweetsViewModel, tweetId: Int) {
     val commentText = remember { mutableStateOf("") }
-    val comments = remember { mutableStateListOf<Comentario>() }
+    val comments by tweetsViewModel.comments.observeAsState(emptyList())
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(modifier = Modifier.padding(16.dp)) {
         HeaderComentario(navController)
@@ -53,16 +59,11 @@ fun ComentScreen(navController: NavController, tweetsViewModel: TweetsViewModel,
             onClick = {
                 scope.launch {
                     val commentRequest = CommentRequest(
-                        tweet_id = 1,
+                        tweet_id = tweetId,
                         content = commentText.value
                     )
-                    tweetsViewModel.postComment(commentRequest)
-                    comments.add(Comentario(
-                        text = commentText.value,
-                        author = "User",
-                        profilePictureUrl = "https://example.com/profile.jpg",
-                        timestamp = "2h ago"
-                    ))
+
+                    tweetsViewModel.postComment(commentRequest, context, tweetId)
                     commentText.value = ""
                 }
             },
@@ -78,39 +79,32 @@ fun ComentScreen(navController: NavController, tweetsViewModel: TweetsViewModel,
             }
         }
     }
+
+    LaunchedEffect(Unit) {
+        tweetsViewModel.fetchComments(tweetId)
+    }
 }
 
 @Composable
-fun CommentItem(comment: Comentario) {
-    val liked = remember { mutableStateOf(comment.liked) }
+fun CommentItem(comment: Comment) {
 
     Column(modifier = Modifier.padding(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = rememberImagePainter(data = comment.profilePictureUrl),
+            Icon(
+                imageVector =  Icons.Rounded.AccountCircle,
                 contentDescription = "profile picture",
+                tint = Color.White,
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(40.dp)
             )
             Spacer(modifier = Modifier.size(8.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = comment.author, color = Color.White)
-                Text(text = comment.timestamp, color = Color.Gray, fontSize = 12.sp)
+                Text(text = comment.user_name, color = Color.White)
             }
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = "Like",
-                tint = if (liked.value) Color.Red else Color.Gray,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {
-                        liked.value = !liked.value
-                        comment.liked = liked.value
-                    }
-            )
+
         }
-        Text(text = comment.text, color = Color.White)
+        Text(text = comment.comment, color = Color.White)
         HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp))
     }
 }
