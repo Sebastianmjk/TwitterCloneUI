@@ -46,7 +46,7 @@ import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
-fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel, tweetsViewModel: TweetsViewModel) {
+fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel, tweetsViewModel: TweetsViewModel, profileViewModel: ProfileViewModel) {
     DisableBackPressHandler()
     val tweets by tweetsViewModel.tweets.observeAsState(emptyList())
 
@@ -66,7 +66,7 @@ fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel,
         Column(modifier = Modifier.padding(paddingValues)) {
             LazyColumn {
                 items(tweets) { tweet ->
-                    TweetDesign(navController, tweet)
+                    TweetDesign(navController, tweet, profileViewModel)
                 }
             }
         }

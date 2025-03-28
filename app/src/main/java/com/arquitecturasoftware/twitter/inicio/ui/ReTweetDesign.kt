@@ -1,3 +1,4 @@
+// src/main/java/com/arquitecturasoftware/twitter/inicio/ui/ReTweetDesign.kt
 package com.arquitecturasoftware.twitter.inicio.ui
 
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
 
 @Composable
-fun ReTweetDesign(navController: NavController, retweeter: String, tweet: Tweet) {
+fun ReTweetDesign(navController: NavController, retweetResponse: RetweetResponse, profileViewModel: ProfileViewModel) {
+    val tweet = retweetResponse.tweet.toTweet()
     Column(modifier = Modifier.padding(10.dp)) {
         Icon(
             painter = painterResource(id = R.drawable.ic_rt),
@@ -23,10 +26,10 @@ fun ReTweetDesign(navController: NavController, retweeter: String, tweet: Tweet)
             modifier = Modifier.size(20.dp)
         )
         Text(
-            text = "$retweeter ha retweeteado",
+            text = "${retweetResponse.retweeter_name} ha retweeteado",
             color = Color.Gray,
             modifier = Modifier.padding(start = 8.dp)
         )
     }
-    TweetDesign(navController, tweet)
+    TweetDesign(navController, tweet, profileViewModel)
 }

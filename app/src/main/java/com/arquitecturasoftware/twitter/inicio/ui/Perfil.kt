@@ -1,3 +1,4 @@
+// src/main/java/com/arquitecturasoftware/twitter/inicio/ui/Perfil.kt
 package com.arquitecturasoftware.twitter.inicio.ui
 
 import android.net.Uri
@@ -55,8 +56,8 @@ fun ProfileScreen(
     val token = "Bearer " + TokenManager.accessToken
     val profile by profileViewModel.profile.observeAsState()
     val tokenData by profileViewModel.tokenData.observeAsState()
-    val userTweets by profileViewModel.userTweets.observeAsState()
-    val userRetweets by profileViewModel.userRetweets.observeAsState()
+    val userTweets by profileViewModel.userTweets.observeAsState(emptyList())
+    val userRetweets by profileViewModel.userRetweets.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile(token)
@@ -134,10 +135,8 @@ fun ProfileScreen(
                             profileViewModel.fetchUserTweets(tokenData.uid)
                         }
                         LazyColumn {
-                            userTweets?.let { tweets ->
-                                items(tweets) { tweet ->
-                                    Text(text = tweet.content, color = Color.White)
-                                }
+                            items(userTweets ?: emptyList()) { tweet ->
+                                TweetDesign(navController, tweet, profileViewModel)
                             }
                         }
                     }
@@ -146,12 +145,8 @@ fun ProfileScreen(
                             profileViewModel.fetchUserRetweets(tokenData.uid)
                         }
                         LazyColumn {
-                            userRetweets?.let { tweetsRetweetsResponses ->
-                                tweetsRetweetsResponses.forEach { tweetsRetweetsResponse ->
-                                    items(tweetsRetweetsResponse.retweets) { retweet ->
-                                        Text(text = retweet.tweet.content, color = Color.White)
-                                    }
-                                }
+                            items(userRetweets ?: emptyList()) { retweet ->
+                                ReTweetDesign(navController, retweet, profileViewModel)
                             }
                         }
                     }
@@ -165,7 +160,6 @@ fun ProfileScreen(
         }
     }
 }
-
 
 enum class SelectedButton {
     PUBLICACIONES, RETWEETS, ME_GUSTA

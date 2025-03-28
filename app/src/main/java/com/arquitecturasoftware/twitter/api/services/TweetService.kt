@@ -8,6 +8,7 @@ import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetsRetweets
 import com.arquitecturasoftware.twitter.inicio.ui.Tweet
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -51,4 +52,10 @@ interface TweetService{
         @Header("Authorization") token: String,
         @Body retweetRequest: RetweetRequest
     ): Response<RetweetResponse>
+
+    @DELETE("/service_tweet/retweet/{tweet_id}")
+    suspend fun deleteRtweet(
+        @Header("Authorization") token: String,
+        @Path("tweet_id") tweetId: Int
+    ): Response<Unit>
 }

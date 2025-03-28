@@ -1,15 +1,17 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
-import com.arquitecturasoftware.twitter.api.response.authservice.UpdateProfileRequest
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arquitecturasoftware.twitter.api.services.ApiService
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
+import com.arquitecturasoftware.twitter.api.response.authservice.UpdateProfileRequest
 import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileResponse
 import com.arquitecturasoftware.twitter.api.response.authservice.VerifyTokenResponse
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetRequest
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
 import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetsRetweetsResponse
 import com.arquitecturasoftware.twitter.api.services.AuthService
 import com.arquitecturasoftware.twitter.api.services.TweetService
@@ -18,15 +20,15 @@ import kotlinx.coroutines.launch
 class ProfileViewModel : ViewModel() {
 
     private val authService: AuthService = RetrofitHelper.authApi
-    private val tweetService: TweetService = RetrofitHelper.interactionService
+    private val tweetService: TweetService = RetrofitHelper.tweetService
 
     private val _profileUpdateResult = MutableLiveData<UsersProfileResponse?>()
     val profileUpdateResult: LiveData<UsersProfileResponse?> = _profileUpdateResult
 
-    suspend fun updateProfile(token: String,name: String, password: String): Boolean {
+    suspend fun updateProfile(token: String, name: String, password: String): Boolean {
         return try {
             val request = UpdateProfileRequest(name, password)
-            val response = authService.updateProfile(token,request)
+            val response = authService.updateProfile(token, request)
             if (response.isSuccessful) {
                 _profileUpdateResult.value = response.body()
                 Log.i("ProfileViewModel", "Response: ${response.body()}")
@@ -52,8 +54,8 @@ class ProfileViewModel : ViewModel() {
     private val _userTweets = MutableLiveData<List<Tweet>?>()
     val userTweets: LiveData<List<Tweet>?> = _userTweets
 
-    private val _userRetweets = MutableLiveData<List<TweetsRetweetsResponse>?>()
-    val userRetweets: LiveData<List<TweetsRetweetsResponse>?> = _userRetweets
+    private val _userRetweets = MutableLiveData<List<RetweetResponse>?>()
+    val userRetweets: LiveData<List<RetweetResponse>?> = _userRetweets
 
     fun fetchProfile(token: String) {
         viewModelScope.launch {
@@ -109,7 +111,7 @@ class ProfileViewModel : ViewModel() {
     fun fetchUserRetweets(userId: Int) {
         viewModelScope.launch {
             try {
-                val response = tweetService.getRetweetedTweetsByUser(userId)
+                val response = tweetService.getRetweetsByUser(userId)
                 if (response.isSuccessful) {
                     _userRetweets.value = response.body()
                 } else {
@@ -123,4 +125,97 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    var retweetedTweets = mutableStateOf(mutableSetOf<Int>())
+        private set
+
+    var retweetCounts = mutableStateOf(mutableMapOf<Int, Int>())
+        private set
+
+    var chattedTweets = mutableStateOf(mutableSetOf<Int>())
+        private set
+
+    var chatCounts = mutableStateOf(mutableMapOf<Int, Int>())
+        private set
+
+    var likedTweets = mutableStateOf(mutableSetOf<Int>())
+        private set
+
+    var likeCounts = mutableStateOf(mutableMapOf<Int, Int>())
+        private set
+
+    fun toggleRetweet(token: String, tweetId: Int) {
+        val retweeted = retweetedTweets.value.toMutableSet()
+        val counts = retweetCounts.value.toMutableMap()
+        if (retweeted.contains(tweetId)) {
+            retweeted.remove(tweetId)
+            counts[tweetId] = (counts[tweetId] ?: 1) - 1
+            Log.d("ProfileViewModel", "Calling deleteRtweet for tweetId: $tweetId")
+            deleteRtweet(token, tweetId)
+        } else {
+            retweeted.add(tweetId)
+            counts[tweetId] = (counts[tweetId] ?: 0) + 1
+            Log.d("ProfileViewModel", "Calling postRetweet for tweetId: $tweetId")
+            postRetweet(token, tweetId)
+        }
+        retweetedTweets.value = retweeted
+        retweetCounts.value = counts
+    }
+
+    private fun postRetweet(token: String, tweetId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = tweetService.postRetweet(token, RetweetRequest(tweetId))
+                if (response.isSuccessful) {
+                    Log.i("ProfileViewModel", "Retweet successful: ${response.body()}")
+                } else {
+                    Log.e("ProfileViewModel", "Error posting retweet: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    private fun deleteRtweet(token: String, tweetId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = tweetService.deleteRtweet(token, tweetId)
+                if (response.isSuccessful) {
+                    Log.i("ProfileViewModel", "Retweet deleted successfully")
+                } else {
+                    Log.e("ProfileViewModel", "Error deleting retweet: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun toggleChat(tweetId: Int) {
+        val chatted = chattedTweets.value.toMutableSet()
+        val counts = chatCounts.value.toMutableMap()
+        if (chatted.contains(tweetId)) {
+            chatted.remove(tweetId)
+            counts[tweetId] = (counts[tweetId] ?: 1) - 1
+        } else {
+            chatted.add(tweetId)
+            counts[tweetId] = (counts[tweetId] ?: 0) + 1
+        }
+        chattedTweets.value = chatted
+        chatCounts.value = counts
+    }
+
+    fun toggleLike(tweetId: Int) {
+        val liked = likedTweets.value.toMutableSet()
+        val counts = likeCounts.value.toMutableMap()
+        if (liked.contains(tweetId)) {
+            liked.remove(tweetId)
+            counts[tweetId] = (counts[tweetId] ?: 1) - 1
+        } else {
+            liked.add(tweetId)
+            counts[tweetId] = (counts[tweetId] ?: 0) + 1
+        }
+        likedTweets.value = liked
+        likeCounts.value = counts
+    }
 }

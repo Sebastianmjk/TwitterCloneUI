@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                         navController = navigationController,
                         startDestination = Routes.Home.ruta
                     ) {
-                        composable(Routes.Inicio.ruta) { InicioScreen(navigationController, sharedViewModel, tweetsViewModel) }
+                        composable(Routes.Inicio.ruta) { InicioScreen(navigationController, sharedViewModel, tweetsViewModel,profileViewModel) }
                         composable(Routes.AddTweet.ruta) { AddTweet(navigationController, addTweetViewModel) }
                         composable(Routes.LoginEmail.ruta) { LoginScreen(loginViewModel, navigationController) }
                         composable(Routes.LoginPassword.ruta) { LoginScreen2(loginViewModel, navigationController) }
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.LoginNewContrasena.ruta) { LoginNewContrasena(loginViewModel, navigationController) }
                         composable(Routes.RegistroArrobaNombre.ruta) { RegistroArrobaNombre(registroViewModel, navigationController) }
                         composable(Routes.EditarPerfil.ruta) { EditarPerfil(loginViewModel, navigationController, profileViewModel) }
-                        composable(Routes.Comentarios.ruta) { ComentScreen(navigationController) }
+                        composable(Routes.Comentarios.ruta) { ComentScreen(navigationController,tweetsViewModel,1) }
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package com.arquitecturasoftware.twitter.inicio.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,9 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,13 +26,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.api.TokenManager
 import com.arquitecturasoftware.twitter.routes.Routes
+import kotlinx.coroutines.launch
 
 @Composable
-fun TweetDesign(navController: NavController, tweet: Tweet) {
-    var chat by rememberSaveable { mutableStateOf(false) }
-    var rt by rememberSaveable { mutableStateOf(false) }
-    var like by rememberSaveable { mutableStateOf(false) }
+fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: ProfileViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    val token = "Bearer " + TokenManager.accessToken
+    val retweetedTweets by profileViewModel.retweetedTweets
+    val retweetCounts by profileViewModel.retweetCounts
+    val chattedTweets by profileViewModel.chattedTweets
+    val chatCounts by profileViewModel.chatCounts
+    val likedTweets by profileViewModel.likedTweets
+    val likeCounts by profileViewModel.likeCounts
+
+    val rt = retweetedTweets.contains(tweet.id)
+    val chat = chattedTweets.contains(tweet.id)
+    val like = likedTweets.contains(tweet.id)
+
     Column {
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
         Row(Modifier
@@ -45,7 +54,7 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                 .fillMaxWidth()
                 .padding(16.dp)) {
                 Row(Modifier.fillMaxWidth()) {
-                   Icon(
+                    Icon(
                         Icons.Rounded.AccountCircle,
                         contentDescription = "",
                         tint = Color.White,
@@ -53,8 +62,7 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                             .size(40.dp)
                             .clip(CircleShape)
                     )
-                    Spacer(modifier = Modifier.size(8.dp)
-                   )
+                    Spacer(modifier = Modifier.size(8.dp))
                     TextTitle(tweet.user_name, Modifier.padding(end = 8.dp))
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -72,8 +80,8 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                             contentDescription = "",
                             tint = Color.Gray
                         )
-                    }, isSelected = chat) {
-                        chat = !chat
+                    }, isSelected = chat, count = chatCounts[tweet.id] ?: 0) {
+                        profileViewModel.toggleChat(tweet.id)
                         navController.navigate(Routes.Comentarios.ruta)
                     }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
@@ -88,7 +96,11 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                             contentDescription = "",
                             tint = Color.Green
                         )
-                    }, isSelected = rt) { rt = !rt }
+                    }, isSelected = rt, count = retweetCounts[tweet.id] ?: 0) {
+                        coroutineScope.launch {
+                            profileViewModel.toggleRetweet(token, tweet.id)
+                        }
+                    }
                     SocialIcon(modifier = Modifier.weight(1f), unselectedIcon = {
                         Icon(
                             painterResource(R.drawable.ic_like),
@@ -101,7 +113,9 @@ fun TweetDesign(navController: NavController, tweet: Tweet) {
                             contentDescription = "",
                             tint = Color.Red
                         )
-                    }, isSelected = like) { like = !like }
+                    }, isSelected = like, count = likeCounts[tweet.id] ?: 0) {
+                        profileViewModel.toggleLike(tweet.id)
+                    }
                 }
             }
         }
@@ -115,9 +129,9 @@ fun SocialIcon(
     unselectedIcon: @Composable () -> Unit,
     selectedIcon: @Composable () -> Unit,
     isSelected: Boolean,
+    count: Int,
     onItemSelected: () -> Unit
 ) {
-    val defaultValue = 1
     Row(
         modifier = modifier.clickable { onItemSelected() },
         verticalAlignment = Alignment.CenterVertically
@@ -128,13 +142,12 @@ fun SocialIcon(
             unselectedIcon()
         }
         Text(
-            text = if (isSelected) (defaultValue + 1).toString() else defaultValue.toString(),
+            text = count.toString(),
             color = Color(0xFF7E8B98),
             fontSize = 12.sp,
             modifier = Modifier.padding(start = 4.dp)
         )
     }
-
 }
 
 @Composable
