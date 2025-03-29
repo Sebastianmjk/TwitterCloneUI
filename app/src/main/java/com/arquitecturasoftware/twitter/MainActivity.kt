@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.arquitecturasoftware.twitter.api.TokenManager
 import com.arquitecturasoftware.twitter.home.HomeScreen
 import com.arquitecturasoftware.twitter.inicio.ui.AddTweet
 import com.arquitecturasoftware.twitter.inicio.ui.AddTweetViewModel
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
                     val navigationController = rememberNavController()
                     NavHost(
                         navController = navigationController,
-                        startDestination = Routes.Home.ruta
+                        startDestination = if (TokenManager.accessToken?.isEmpty() == true) Routes.LoginEmail.ruta else Routes.Home.ruta
                     ) {
                         composable(Routes.Inicio.ruta) { InicioScreen(navigationController, sharedViewModel, tweetsViewModel,profileViewModel) }
                         composable(Routes.AddTweet.ruta) { AddTweet(navigationController, addTweetViewModel) }

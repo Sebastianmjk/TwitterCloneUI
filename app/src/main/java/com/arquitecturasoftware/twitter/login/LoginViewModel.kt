@@ -1,9 +1,11 @@
 package com.arquitecturasoftware.twitter.login
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.arquitecturasoftware.twitter.api.RetrofitHelper
 import com.arquitecturasoftware.twitter.api.TokenManager
 import com.arquitecturasoftware.twitter.api.UserDataToken
@@ -70,6 +72,21 @@ class LoginViewModel  :ViewModel() {
         } finally {
             _isLoading.value = false
         }
+    }
+
+    suspend fun logout(onLogoutSuccess: () -> Unit) {
+            try {
+                val response = authService.logout("Bearer " + TokenManager.accessToken)
+                if (response.isSuccessful) {
+                    TokenManager.accessToken = ""
+                    _loginResult.value = null
+                    onLogoutSuccess()
+                } else {
+                    Log.e("LoginViewModel", "Error al cerrar sesión: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("LoginViewModel", "Exception: ${e.message}")
+            }
     }
 
     fun setNombre(nombre: String) {

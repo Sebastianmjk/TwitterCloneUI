@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.api.services
 
+import com.arquitecturasoftware.twitter.api.response.authservice.LogoutResponse
 import com.arquitecturasoftware.twitter.api.response.authservice.RegisterRequest
 import com.arquitecturasoftware.twitter.api.response.authservice.TokenResponse
 import com.arquitecturasoftware.twitter.api.response.authservice.UpdateProfileRequest
@@ -27,7 +28,7 @@ interface AuthService {
     ): Response<TokenResponse>
 
     @POST("/service_auth/auth/logout")
-    suspend fun logout(@Header("Authorization") token: String): Response<String>
+    suspend fun logout(@Header("Authorization") token: String): Response<LogoutResponse>
 
     @GET("/service_auth/auth/verify_token")
     suspend fun verifyToken(@Header("Authorization") token: String): Response<VerifyTokenResponse>

@@ -44,6 +44,9 @@ import com.arquitecturasoftware.twitter.api.response.authservice.UsersProfileRes
 import com.arquitecturasoftware.twitter.login.LoginViewModel
 import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -69,7 +72,7 @@ fun ProfileScreen(
     Scaffold(
         containerColor = Color.Black,
         topBar = {
-            HeaderProfile(navController, profile)
+            HeaderProfile(navController, profile, loginViewModel)
         },
         bottomBar = {
             MyBottomNavigationInicio(navController, sharedViewModel)
@@ -141,16 +144,23 @@ fun ProfileScreen(
                             }
                         }
                     }
+
                     SelectedButton.RETWEETS -> {
                         LaunchedEffect(Unit) {
                             profileViewModel.fetchUserRetweets(tokenData.uid)
                         }
                         LazyColumn {
                             items(userRetweets ?: emptyList()) { retweet ->
-                                ReTweetDesign(navController, retweet, profileViewModel, tweetsViewModel)
+                                ReTweetDesign(
+                                    navController,
+                                    retweet,
+                                    profileViewModel,
+                                    tweetsViewModel
+                                )
                             }
                         }
                     }
+
                     SelectedButton.ME_GUSTA -> {
                         LaunchedEffect(Unit) {
                             profileViewModel.fetchLikedTweets(tokenData.uid)
@@ -172,7 +182,11 @@ enum class SelectedButton {
 }
 
 @Composable
-fun HeaderProfile(navController: NavController, profile: UsersProfileResponse?) {
+fun HeaderProfile(
+    navController: NavController,
+    profile: UsersProfileResponse?,
+    loginViewModel: LoginViewModel
+) {
 
     Column(Modifier.fillMaxWidth()) {
         Row(
@@ -191,7 +205,7 @@ fun HeaderProfile(navController: NavController, profile: UsersProfileResponse?) 
                 Text("Editar Perfil")
             }
             Spacer(modifier = Modifier.size(8.dp))
-            CerrarSesionButton(navController)
+            CerrarSesionButton(navController, loginViewModel)
         }
         Row(
             modifier = Modifier
@@ -221,9 +235,20 @@ fun HeaderProfile(navController: NavController, profile: UsersProfileResponse?) 
 }
 
 @Composable
-fun CerrarSesionButton(navController: NavController) {
+fun CerrarSesionButton(navController: NavController, loginViewModel: LoginViewModel) {
     Button(
-        onClick = { navController.navigate(Routes.Home.ruta) },
+        onClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+                loginViewModel.logout {
+                    navController.navigate(Routes.Home.ruta) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+
+        },
         enabled = true,
         border = BorderStroke(1.dp, Color.Red),
         modifier = Modifier.fillMaxWidth(),
