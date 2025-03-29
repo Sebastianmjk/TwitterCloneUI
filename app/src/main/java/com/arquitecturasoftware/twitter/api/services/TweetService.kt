@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.api.services
 
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetCount
 import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetRequest
 import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
 import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetRequest
@@ -59,4 +60,8 @@ interface TweetService{
         @Header("Authorization") token: String,
         @Path("tweet_id") tweetId: Int
     ): Response<Unit>
+
+    @GET("/service_tweet/retweets/count/tweet/{tweet_id}")
+    suspend fun getRetweetCountByTweetId(@Path("tweet_id") tweetId: Int): Response<RetweetCount>
+
 }

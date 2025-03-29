@@ -3,6 +3,7 @@ package com.arquitecturasoftware.twitter.inicio.ui
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -85,20 +86,23 @@ fun HeaderInicio(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(top = 32.dp, bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
-        Spacer(modifier = Modifier.weight(0.9f))
+        Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo_twitter),
             contentDescription = "profile picture",
-            modifier = Modifier.clip(shape = CircleShape).size(55.dp)
+            modifier = Modifier
+                .clip(shape = CircleShape)
+                .size(55.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { navController.navigate(Routes.Home.ruta) }, colors = IconButtonDefaults.iconButtonColors(
-            contentColor = Color.White
-        )) {
+        IconButton(
+            onClick = { navController.navigate(Routes.Home.ruta) },
+            colors = IconButtonDefaults.iconButtonColors(contentColor = Color.White)
+        ) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar sesion")
         }
     }

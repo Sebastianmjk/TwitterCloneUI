@@ -75,9 +75,8 @@ fun ProfileScreen(
             MyBottomNavigationInicio(navController, sharedViewModel)
         },
         floatingActionButton = {
-            Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })
+            /*Fab(onAbrirMenu = { navController.navigate(Routes.AddTweet.ruta) })*/
         },
-        floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         Column(
             modifier = Modifier

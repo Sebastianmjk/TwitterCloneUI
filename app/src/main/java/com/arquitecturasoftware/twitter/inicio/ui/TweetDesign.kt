@@ -54,6 +54,8 @@ fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: Pr
 
     LaunchedEffect(tweet.id) {
         tweetsViewModel.fetchCommentCount(tweet.id)
+        profileViewModel.fetchLikeCount(tweet.id)
+        profileViewModel.fetchRetweetCount(tweet.id)
     }
 
     Column {
@@ -105,7 +107,7 @@ fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: Pr
                         Icon(
                             painterResource(R.drawable.ic_rt),
                             contentDescription = "",
-                            tint = Color.Green
+                            tint = Color(0xFF7E8B98)
                         )
                     }, isSelected = rt, count = retweetCounts[tweet.id] ?: 0) {
                         coroutineScope.launch {
@@ -120,9 +122,9 @@ fun TweetDesign(navController: NavController, tweet: Tweet, profileViewModel: Pr
                         )
                     }, selectedIcon = {
                         Icon(
-                            painterResource(R.drawable.ic_like_filled),
+                            painterResource(R.drawable.ic_like),
                             contentDescription = "",
-                            tint = Color.Red
+                            tint = Color(0xFF7E8B98)
                         )
                     }, isSelected = like, count = likeCounts[tweet.id] ?: 0) {
                         coroutineScope.launch {

@@ -169,28 +169,29 @@ class ProfileViewModel : ViewModel() {
 
     fun toggleRetweet(token: String, tweetId: Int) {
         val retweeted = retweetedTweets.value.toMutableSet()
-        val counts = retweetCounts.value.toMutableMap()
         if (retweeted.contains(tweetId)) {
             retweeted.remove(tweetId)
-            counts[tweetId] = (counts[tweetId] ?: 1) - 1
-            Log.d("ProfileViewModel", "Calling deleteRtweet for tweetId: $tweetId")
-            deleteRtweet(token, tweetId)
+            deleteRtweet(token, tweetId) {
+                updateRetweetCount(tweetId)
+                fetchUserRetweets(tokenData.value?.uid ?: return@deleteRtweet)
+            }
         } else {
             retweeted.add(tweetId)
-            counts[tweetId] = (counts[tweetId] ?: 0) + 1
-            Log.d("ProfileViewModel", "Calling postRetweet for tweetId: $tweetId")
-            postRetweet(token, tweetId)
+            postRetweet(token, tweetId) {
+                updateRetweetCount(tweetId)
+                fetchUserRetweets(tokenData.value?.uid ?: return@postRetweet)
+            }
         }
         retweetedTweets.value = retweeted
-        retweetCounts.value = counts
     }
 
-    private fun postRetweet(token: String, tweetId: Int) {
+    private fun postRetweet(token: String, tweetId: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 val response = tweetService.postRetweet(token, RetweetRequest(tweetId))
                 if (response.isSuccessful) {
                     Log.i("ProfileViewModel", "Retweet successful: ${response.body()}")
+                    onSuccess()
                 } else {
                     Log.e("ProfileViewModel", "Error posting retweet: ${response.errorBody()?.string()}")
                 }
@@ -200,14 +201,33 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    private fun deleteRtweet(token: String, tweetId: Int) {
+    private fun deleteRtweet(token: String, tweetId: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 val response = tweetService.deleteRtweet(token, tweetId)
                 if (response.isSuccessful) {
                     Log.i("ProfileViewModel", "Retweet deleted successfully")
+                    onSuccess()
                 } else {
                     Log.e("ProfileViewModel", "Error deleting retweet: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateRetweetCount(tweetId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = tweetService.getRetweetCountByTweetId(tweetId)
+                if (response.isSuccessful) {
+                    val count = response.body()?.total_retweets ?: 0
+                    val counts = retweetCounts.value.toMutableMap()
+                    counts[tweetId] = count
+                    retweetCounts.value = counts
+                } else {
+                    Log.e("ProfileViewModel", "Error fetching retweet count: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Exception: ${e.message}")
@@ -231,29 +251,29 @@ class ProfileViewModel : ViewModel() {
 
     fun toggleLike(token: String, tweetId: Int) {
         val liked = likedTweets.value.toMutableSet()
-        val counts = likeCounts.value.toMutableMap()
         if (liked.contains(tweetId)) {
             liked.remove(tweetId)
-            counts[tweetId] = (counts[tweetId] ?: 1) - 1
-            Log.d("ProfileViewModel", "Calling deleteLike for tweetId: $tweetId")
-            deleteLike(token, tweetId)
+            deleteLike(token, tweetId) {
+                updateLikeCount(tweetId)
+                fetchLikedTweets(tokenData.value?.uid ?: return@deleteLike)
+            }
         } else {
             liked.add(tweetId)
-            counts[tweetId] = (counts[tweetId] ?: 0) + 1
-            Log.d("ProfileViewModel", "Calling postLike for tweetId: $tweetId")
-            postLike(token, tweetId)
+            postLike(token, tweetId) {
+                updateLikeCount(tweetId)
+                fetchLikedTweets(tokenData.value?.uid ?: return@postLike)
+            }
         }
         likedTweets.value = liked
-        likeCounts.value = counts
     }
 
-
-    private fun postLike(token: String, tweetId: Int) {
+    private fun postLike(token: String, tweetId: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 val response = interactionService.postLike(token, RetweetRequest(tweetId))
                 if (response.isSuccessful) {
                     Log.i("ProfileViewModel", "Like successful: ${response.body()}")
+                    onSuccess()
                 } else {
                     Log.e("ProfileViewModel", "Error posting like: ${response.errorBody()?.string()}")
                 }
@@ -263,14 +283,69 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    private fun deleteLike(token: String, tweetId: Int) {
+    private fun deleteLike(token: String, tweetId: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 val response = interactionService.deleteLike(token, tweetId)
                 if (response.isSuccessful) {
                     Log.i("ProfileViewModel", "Like deleted successfully")
+                    onSuccess()
                 } else {
                     Log.e("ProfileViewModel", "Error deleting like: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateLikeCount(tweetId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = interactionService.getCountLikesByTweetID(tweetId)
+                if (response.isSuccessful) {
+                    val count = response.body()?.total_likes ?: 0
+                    val counts = likeCounts.value.toMutableMap()
+                    counts[tweetId] = count
+                    likeCounts.value = counts
+                } else {
+                    Log.e("ProfileViewModel", "Error fetching like count: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchLikeCount(tweetId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = interactionService.getCountLikesByTweetID(tweetId)
+                if (response.isSuccessful) {
+                    val count = response.body()?.total_likes ?: 0
+                    val counts = likeCounts.value.toMutableMap()
+                    counts[tweetId] = count
+                    likeCounts.value = counts
+                } else {
+                    Log.e("ProfileViewModel", "Failed to fetch like count")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchRetweetCount(tweetId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = tweetService.getRetweetCountByTweetId(tweetId)
+                if (response.isSuccessful) {
+                    val count = response.body()?.total_retweets ?: 0
+                    val counts = retweetCounts.value.toMutableMap()
+                    counts[tweetId] = count
+                    retweetCounts.value = counts
+                } else {
+                    Log.e("ProfileViewModel", "Failed to fetch retweet count")
                 }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Exception: ${e.message}")
