@@ -46,6 +46,7 @@ fun RegistroArrobaNombre(
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(registrationResult) {
         registrationResult?.let {
+            registroViewModel.registerNull()
             navigationController.navigate(Routes.Home.ruta)
         }
     }

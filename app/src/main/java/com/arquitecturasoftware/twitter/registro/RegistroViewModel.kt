@@ -1,5 +1,6 @@
 package com.arquitecturasoftware.twitter.registro
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.util.Patterns
@@ -95,8 +96,13 @@ class RegistroViewModel  : ViewModel() {
             }
         } catch (e: Exception) {
             _registrationResult.value = null
+            Log.e("error registro", e.toString())
             false
         }
+    }
+
+    fun registerNull(){
+        _registrationResult.value = null
     }
 
     private fun enableRegistroEmail(email: String): Boolean {

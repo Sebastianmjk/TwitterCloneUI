@@ -54,7 +54,11 @@ fun ContraRegistro(registroViewModel: RegistroViewModel, navigationController: N
         Password(password) { registroViewModel.onRegistroChangesPassword(it) }
         PoliticsTextContra()
         Spacer(modifier = Modifier.weight(1f))
-        HorizontalDivider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(bottom = 8.dp))
+        HorizontalDivider(
+            color = Color.Gray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
         Box(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -70,13 +74,24 @@ fun ContraRegistro(registroViewModel: RegistroViewModel, navigationController: N
 }
 
 @Composable
-fun ContrasenaTextTittle(){
-    Text(text = "Necesitarás una contraseña", fontSize = 36.sp, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp), lineHeight = 40.sp)
+fun ContrasenaTextTittle() {
+    Text(
+        text = "Necesitarás una contraseña",
+        fontSize = 36.sp,
+        color = Color.White,
+        modifier = Modifier.padding(horizontal = 8.dp),
+        lineHeight = 40.sp
+    )
 }
 
 @Composable
-fun ContrasenaText(){
-    Text(text = "Asegurate de que tenga 8 caracteres o más.", fontSize = 16.sp, color = Color.Gray, modifier = Modifier.padding(16.dp))
+fun ContrasenaText() {
+    Text(
+        text = "Asegurate de que tenga 8 caracteres o más.",
+        fontSize = 16.sp,
+        color = Color.Gray,
+        modifier = Modifier.padding(16.dp)
+    )
 }
 
 @Composable
@@ -97,14 +112,19 @@ fun PoliticsTextContra() {
             }
             pop()
             append(", incluida la politica de ")
-            pushStringAnnotation(tag = "URL", annotation = "https://help.x.com/es/rules-and-policies/x-cookies")
+            pushStringAnnotation(
+                tag = "URL",
+                annotation = "https://help.x.com/es/rules-and-policies/x-cookies"
+            )
             withStyle(style = SpanStyle(color = Color(0xFF4EA8E9), fontWeight = FontWeight.Bold)) {
                 append("Uso de cookies")
             }
             pop()
-            append(". X puede usar tu información de contacto, como tu dirección de correo electrónico y tu número de télefono, con los " +
-                    "fines descritos en nueestra Política de privacidad, por ejemplo para mantener tu cuenta segura y personalizar nuestros servicios, incluidos" +
-                    " los anuncios.")
+            append(
+                ". X puede usar tu información de contacto, como tu dirección de correo electrónico y tu número de télefono, con los " +
+                        "fines descritos en nueestra Política de privacidad, por ejemplo para mantener tu cuenta segura y personalizar nuestros servicios, incluidos" +
+                        " los anuncios."
+            )
             pushStringAnnotation(tag = "URL", annotation = "https://twitter.com/privacy")
             withStyle(style = SpanStyle(color = Color(0xFF4EA8E9), fontWeight = FontWeight.Bold)) {
                 append("Más información")
@@ -116,20 +136,36 @@ fun PoliticsTextContra() {
 
     ClickableText(
         text = annotatedString,
-        style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp, color = Color.Gray, lineHeight = 16.sp),
+        style = androidx.compose.ui.text.TextStyle(
+            fontSize = 12.sp,
+            color = Color.Gray,
+            lineHeight = 16.sp
+        ),
         onClick = { offset ->
             annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
                 .firstOrNull()?.let { annotation ->
                     uriHandler.openUri(annotation.item)
                 }
         },
-        modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
     )
 }
 
 @Composable
 fun SiguienteButtonContrasena(loginEnable: Boolean, navController: NavController) {
-    Button(onClick = { navController.navigate(Routes.RegistroArrobaNombre.ruta) }, enabled = loginEnable, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black, disabledContainerColor = Color.LightGray, disabledContentColor = Color.Gray)) {
+    Button(
+        onClick = { navController.navigate(Routes.RegistroArrobaNombre.ruta) },
+        enabled = loginEnable,
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black,
+            disabledContainerColor = Color.LightGray,
+            disabledContentColor = Color.Gray
+        )
+    ) {
         Text(text = "Registrarte")
     }
 }
