@@ -43,14 +43,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.arquitecturasoftware.twitter.R
+import com.arquitecturasoftware.twitter.api.response.tweetservice.RetweetResponse
 import com.arquitecturasoftware.twitter.login.SharedViewModel
 import com.arquitecturasoftware.twitter.routes.Routes
 
 @Composable
 fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel, tweetsViewModel: TweetsViewModel, profileViewModel: ProfileViewModel) {
     DisableBackPressHandler()
-    val tweets by tweetsViewModel.tweets.observeAsState(emptyList())
-    val retweets by tweetsViewModel.retweets.observeAsState(emptyList())
+    val tweetsRetweetsMix by tweetsViewModel.tweetsRetweetsMix.observeAsState(emptyList())
 
     Scaffold(
         containerColor = Color.Black,
@@ -67,11 +67,11 @@ fun InicioScreen(navController: NavController, sharedViewModel: SharedViewModel,
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             LazyColumn {
-                items(tweets) { tweet ->
-                    TweetDesign(navController, tweet, profileViewModel, tweetsViewModel)
-                }
-                items(retweets) { retweet ->
-                    ReTweetDesign(navController, retweet, profileViewModel, tweetsViewModel)
+                items(tweetsRetweetsMix) { item ->
+                    when (item) {
+                        is Tweet -> TweetDesign(navController, item, profileViewModel, tweetsViewModel)
+                        is RetweetResponse -> ReTweetDesign(navController, item, profileViewModel, tweetsViewModel)
+                    }
                 }
             }
         }

@@ -15,6 +15,8 @@ import com.arquitecturasoftware.twitter.api.response.tweetservice.TweetResponse
 import com.arquitecturasoftware.twitter.inicio.ui.model.Comment
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class TweetsViewModel : ViewModel() {
     private val _tweets = MutableLiveData<List<Tweet>>()
@@ -28,6 +30,9 @@ class TweetsViewModel : ViewModel() {
 
     private val _commentCounts = MutableLiveData<Map<Int,Int>>()
     val commentCounts: LiveData<Map<Int,Int>> get() = _commentCounts
+
+    private val _tweetsRetweetsMix = MutableLiveData<List<Any>>()
+    val tweetsRetweetsMix: LiveData<List<Any>> get() = _tweetsRetweetsMix
 
     fun fetchTweetsAndRetweets() {
         viewModelScope.launch {
@@ -43,10 +48,12 @@ class TweetsViewModel : ViewModel() {
                                 val retweet = Gson().fromJson(item, RetweetResponse::class.java)
                                 retweets.add(retweet)
                             } else {
-                                val tweet = Gson().fromJson(item, TweetResponse::class.java).toTweet()
+                                val tweet = Gson().fromJson(item, Tweet::class.java)
                                 tweets.add(tweet)
                             }
                         }
+
+                        _tweetsRetweetsMix.value = sortTweetsYRetweets(tweets,retweets)
 
                         _tweets.value = tweets
                         _retweets.value = retweets
@@ -58,6 +65,25 @@ class TweetsViewModel : ViewModel() {
                 Log.e("TweetsViewModel", "Exception: ${e.message}")
             }
         }
+    }
+
+    private fun sortTweetsYRetweets(tweets: List<Tweet>, retweets: List<RetweetResponse>): List<Any> {
+        val listaMixta: MutableList<Any> = mutableListOf()
+        listaMixta.addAll(tweets)
+        listaMixta.addAll(retweets)
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+        listaMixta.sortByDescending { item ->
+            val fecha = when (item) {
+                is Tweet -> item.created_at
+                is RetweetResponse -> item.created_at
+                else -> ""
+            }
+            dateFormat.parse(fecha)
+        }
+
+        return listaMixta
     }
 
     fun postComment(commentRequest: CommentRequest, context: Context,tweetId: Int, token: String = "Bearer "+TokenManager.accessToken) {
